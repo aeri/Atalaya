@@ -1,0 +1,3 @@
+[submodule "netmonster-core"]
+	path = netmonster-core
+	url = https://github.com/mroczis/netmonster-core.git
