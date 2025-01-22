@@ -21,9 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Xamanta"
 include(":app")
-include("netmonster-core")
-project(":netmonster-core").projectDir = file("netmonster-core/library")
-
-
-
  
