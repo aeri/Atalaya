@@ -1,4 +1,4 @@
-package cat.naval.xamanta
+package cat.naval.atalaya
 
 import org.junit.Test
 

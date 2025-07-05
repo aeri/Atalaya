@@ -9,13 +9,13 @@ plugins {
 }
 
 android {
-    namespace = "cat.naval.xamanta"
-    compileSdk = 34
+    namespace = "cat.naval.atalaya"
+    compileSdk = 35
 
     defaultConfig {
-        applicationId = "cat.naval.xamanta"
+        applicationId = "cat.naval.atalaya"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -64,6 +64,12 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.core)
+
+    implementation (libs.androidx.material)
+    implementation (libs.navigation.compose)
+
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

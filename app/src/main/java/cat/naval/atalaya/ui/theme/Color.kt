@@ -1,4 +1,4 @@
-package cat.naval.xamanta.ui.theme
+package cat.naval.atalaya.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

@@ -1,4 +1,4 @@
-package cat.naval.xamanta
+package cat.naval.atalaya
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("cat.naval.xamanta", appContext.packageName)
+        assertEquals("cat.naval.atalaya", appContext.packageName)
     }
 }

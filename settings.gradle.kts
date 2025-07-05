@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Xamanta"
+rootProject.name = "Atalaya"
 include(":app")
  
