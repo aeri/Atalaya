@@ -26,15 +26,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cat.naval.atalaya.CellDataRepository
+import cz.mroczis.netmonster.core.model.cell.CellCdma
 import cz.mroczis.netmonster.core.model.cell.CellGsm
 import cz.mroczis.netmonster.core.model.cell.CellLte
+import cz.mroczis.netmonster.core.model.cell.CellNr
+import cz.mroczis.netmonster.core.model.cell.CellTdscdma
 import cz.mroczis.netmonster.core.model.cell.CellWcdma
 import cz.mroczis.netmonster.core.model.connection.PrimaryConnection
 
 @Composable
 fun ExposureScreen() {
-    val cells by CellDataRepository.cellDataFlow.collectAsState()
-    val cell = cells.firstOrNull { it.connectionStatus == PrimaryConnection() }
+    val networkData by CellDataRepository.networkDataFlow.collectAsState()
+    val cell = networkData.cells.firstOrNull { it.connectionStatus == PrimaryConnection() }
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -56,7 +59,7 @@ fun ExposureScreen() {
 
             ) {
                 Text(
-                    text = "Your carrier",
+                    text = networkData.carrierName,
                     color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 40.sp,
                     fontWeight = FontWeight.Bold
@@ -88,10 +91,12 @@ fun ExposureScreen() {
                         is CellGsm -> CellGsmInfo(cell)
                         is CellLte -> CellLteInfo(cell)
                         is CellWcdma -> CellWcdmaInfo(cell)
+                        is CellNr -> CellNrInfo(cell)
+                        is CellCdma -> CellCdma(cell)
+                        is CellTdscdma -> CellTdscdma(cell)
                     }
                 }
             }
-
         }
         Spacer(modifier = Modifier.height(16.dp))
         Text(
@@ -101,7 +106,6 @@ fun ExposureScreen() {
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.height(8.dp))
-        // Add your EntityCard composable here for each entity
     }
 }
 
@@ -167,6 +171,31 @@ fun CellLteInfo(cell: CellLte) {
 }
 
 @Composable
+fun CellNrInfo(cell: CellNr) {
+    Row {
+        Column {
+            CellInfoSection("NCI", cell.nci.toString())
+            CellInfoSection("TAC", cell.tac.toString())
+            CellInfoSection("PCI", cell.pci.toString())
+        }
+        Spacer(modifier = Modifier.width(64.dp))
+    }
+}
+
+@Composable
+fun CellCdma(cell: CellCdma) {
+    Row {
+        Column {
+            CellInfoSection("NID", cell.nid.toString())
+            CellInfoSection("BID", cell.bid.toString())
+            CellInfoSection("LAT", cell.lat.toString())
+            CellInfoSection("LON", cell.lon.toString())
+        }
+        Spacer(modifier = Modifier.width(64.dp))
+    }
+}
+
+@Composable
 fun CellWcdmaInfo(cell: CellWcdma) {
     Row {
         Column {
@@ -178,6 +207,22 @@ fun CellWcdmaInfo(cell: CellWcdma) {
         Column {
             CellInfoSection("LAC", cell.lac.toString())
             CellInfoSection("PSC", cell.psc.toString())
+        }
+    }
+}
+
+@Composable
+fun CellTdscdma(cell: CellTdscdma) {
+    Row {
+        Column {
+            CellInfoSection("CI", cell.ci.toString())
+            CellInfoSection("RNC", cell.rnc.toString())
+            CellInfoSection("CID", cell.cid.toString())
+        }
+        Spacer(modifier = Modifier.width(64.dp))
+        Column {
+            CellInfoSection("LAC", cell.lac.toString())
+            CellInfoSection("CPID", cell.cpid.toString())
         }
     }
 }

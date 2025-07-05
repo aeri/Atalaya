@@ -11,36 +11,25 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import cat.naval.atalaya.ui.NavigationItem
 import cat.naval.atalaya.ui.screens.ExposureScreen
 import cat.naval.atalaya.ui.screens.PermissionsRequiredScreen
@@ -104,7 +93,6 @@ class MainActivity : ComponentActivity() {
                 ) {
 
                     CellDataRepository.start(this)
-
 
                     setContent {
                         AtalayaTheme {
@@ -190,70 +178,7 @@ fun EntityCard(city: String, status: String, color: Color) {
 
 
 
-@Composable
-fun BottomNavigationBar(navController: NavController) {
-    val items = listOf(
-        NavigationItem.Home,
-        NavigationItem.Music,
-        NavigationItem.Movies,
-        NavigationItem.Profile
-    )
-    BottomNavigation(
-        backgroundColor = colorResource(id = R.color.white),
-        contentColor = Color.White
-    ) {
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = navBackStackEntry?.destination?.route
-        items.forEach { item ->
-            BottomNavigationItem(
-                icon = {
-                    Icon(
-                        painterResource(id = item.icon),
-                        contentDescription = item.title
-                    )
-                },
-                label = { Text(text = item.title) },
-                selectedContentColor = Color.White,
-                unselectedContentColor = Color.White.copy(0.4f),
-                alwaysShowLabel = true,
-                selected = currentRoute == item.route,
-                onClick = {
-                    navController.navigate(item.route) {
-                        // Pop up to the start destination of the graph to
-                        // avoid building up a large stack of destinations
-                        // on the back stack as users select items
-                        navController.graph.startDestinationRoute?.let { route ->
-                            popUpTo(route) {
-                                saveState = true
-                            }
-                        }
-                        // Avoid multiple copies of the same destination when
-                        // reselecting the same item
-                        launchSingleTop = true
-                        // Restore state when reselecting a previously selected item
-                        restoreState = true
-                    }
-                }
-            )
-        }
-    }
-}
 
-
-@Preview
-@Composable
-fun MainScreen() {
-    val navController = rememberNavController()
-    Scaffold(
-        bottomBar = { BottomNavigationBar(navController) },
-        content = { padding ->
-            Box(modifier = Modifier.padding(padding)) {
-                Navigation(navController = navController)
-            }
-        },
-        backgroundColor = colorResource(R.color.purple_500) // Set background color to avoid the white flashing when you switch between screens
-    )
-}
 
 
 @Composable
