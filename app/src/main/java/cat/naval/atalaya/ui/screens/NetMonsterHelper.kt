@@ -10,7 +10,7 @@ import cz.mroczis.netmonster.core.model.cell.ICell
 
 class NetMonsterHelper {
     companion object {
-        fun decodeTechnology(first: ICell): String {
+        fun decodeTechnology(first: ICell?): String {
             return when (first) {
                 is CellGsm -> "2G"
                 is CellWcdma -> "3G"

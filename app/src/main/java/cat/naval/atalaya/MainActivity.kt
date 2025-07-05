@@ -45,8 +45,6 @@ import cat.naval.atalaya.ui.NavigationItem
 import cat.naval.atalaya.ui.screens.ExposureScreen
 import cat.naval.atalaya.ui.screens.PermissionsRequiredScreen
 import cat.naval.atalaya.ui.theme.AtalayaTheme
-import cz.mroczis.netmonster.core.factory.NetMonsterFactory
-import cz.mroczis.netmonster.core.model.cell.ICell
 
 class MainActivity : ComponentActivity() {
     private val permissionRequestCode = 225
@@ -78,8 +76,11 @@ class MainActivity : ComponentActivity() {
             );
 
         }
+        else{
+            CellDataRepository.start(this)
 
-        CellDataRepository.start(this)
+        }
+
 
         setContent {
             AtalayaTheme {
@@ -101,6 +102,10 @@ class MainActivity : ComponentActivity() {
                 if ((grantResults.isNotEmpty() &&
                             grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 ) {
+
+                    CellDataRepository.start(this)
+
+
                     setContent {
                         AtalayaTheme {
                             ExposureScreen()

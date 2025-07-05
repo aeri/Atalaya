@@ -26,13 +26,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cat.naval.atalaya.CellDataRepository
+import cz.mroczis.netmonster.core.model.cell.CellGsm
+import cz.mroczis.netmonster.core.model.cell.CellLte
+import cz.mroczis.netmonster.core.model.cell.CellWcdma
+import cz.mroczis.netmonster.core.model.connection.PrimaryConnection
 
 @Composable
 fun ExposureScreen() {
-
     val cells by CellDataRepository.cellDataFlow.collectAsState()
-
-
+    val cell = cells.firstOrNull { it.connectionStatus == PrimaryConnection() }
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -64,173 +66,28 @@ fun ExposureScreen() {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = NetMonsterHelper.decodeTechnology(cells.first()),
+                        text = NetMonsterHelper.decodeTechnology(cell),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
                         fontSize = 16.sp
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     Text(
-                        text = cells.first().band?.name ?: "N/A",
+                        text = cell?.band?.name ?: "N/A",
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
                         fontSize = 16.sp
                     )
 
                 }
-
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column {
-                        // MEASURE CI
-                        Row (
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Star,
-                                contentDescription = null
-                            )
-                            Spacer(modifier = Modifier.width(5.dp))
-
-                            Column {
-                                Text(
-                                    text = "CI",
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    fontSize = 14.sp,
-                                )
-                                Text(
-                                    text = "123",
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-                        }
-
-                        Row (
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Star,
-                                contentDescription = null
-                            )
-                            Spacer(modifier = Modifier.width(5.dp))
-
-                            Column {
-                                Text(
-                                    text = "CI",
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    fontSize = 14.sp,
-                                )
-                                Text(
-                                    text = "123",
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-                        }
-                        Row (
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Star,
-                                contentDescription = null
-                            )
-                            Spacer(modifier = Modifier.width(5.dp))
-
-                            Column {
-                                Text(
-                                    text = "CI",
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    fontSize = 14.sp,
-                                )
-                                Text(
-                                    text = "123",
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-                        }
-
-
-
-                    }
-
-                    Spacer(modifier = Modifier.width(64.dp))
-                    Column {
-                        Row (
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Star,
-                                contentDescription = null
-                            )
-                            Spacer(modifier = Modifier.width(5.dp))
-
-                            Column {
-                                Text(
-                                    text = "CI",
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    fontSize = 14.sp,
-                                )
-                                Text(
-                                    text = "123",
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-                        }
-                        Row (
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Star,
-                                contentDescription = null
-                            )
-                            Spacer(modifier = Modifier.width(5.dp))
-
-                            Column {
-                                Text(
-                                    text = "CI",
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    fontSize = 14.sp,
-                                )
-                                Text(
-                                    text = "123",
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-                        }
-                        Row (
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Star,
-                                contentDescription = null
-                            )
-                            Spacer(modifier = Modifier.width(5.dp))
-
-                            Column {
-                                Text(
-                                    text = "CI",
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    fontSize = 14.sp,
-                                )
-                                Text(
-                                    text = "123",
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-                        }
+                    when (cell) {
+                        is CellGsm -> CellGsmInfo(cell)
+                        is CellLte -> CellLteInfo(cell)
+                        is CellWcdma -> CellWcdmaInfo(cell)
                     }
                 }
             }
@@ -246,7 +103,81 @@ fun ExposureScreen() {
         Spacer(modifier = Modifier.height(8.dp))
         // Add your EntityCard composable here for each entity
     }
+}
+
+@Composable
+fun CellInfoSection(title: String, value: String) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(vertical = 4.dp)
+    ) {
+        Icon(
+            imageVector = Icons.Default.Star,
+            contentDescription = null
+        )
+        Spacer(modifier = Modifier.width(5.dp))
+        Column {
+            Text(
+                text = title,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = 14.sp
+            )
+            Text(
+                text = value,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+
+@Composable
+fun CellGsmInfo(cell: CellGsm) {
+    Column {
+        CellInfoSection("CID", cell.cid.toString())
+        CellInfoSection("LAC", cell.lac.toString())
+        CellInfoSection("BSIC", cell.bsic.toString())
+    }
+}
+
+@Composable
+fun CellLteInfo(cell: CellLte) {
+    Row {
+        Column {
+            CellInfoSection("CI", cell.eci.toString())
+            CellInfoSection("eNB", cell.enb.toString())
+            CellInfoSection("CID", cell.cid.toString())
+        }
+        Spacer(modifier = Modifier.width(64.dp))
+        Column {
+            CellInfoSection("TAC", cell.tac.toString())
+            CellInfoSection("PCI", cell.pci.toString())
+            if (cell.bandwidth != null){
+                CellInfoSection("BW", cell.bandwidth.toString())
+            }
+        }
+        if (cell.aggregatedBands.isNotEmpty()){
+            Spacer(modifier = Modifier.width(64.dp))
+            Text("CA" )
 
 
+        }
+    }
+}
 
+@Composable
+fun CellWcdmaInfo(cell: CellWcdma) {
+    Row {
+        Column {
+            CellInfoSection("CI", cell.ci.toString())
+            CellInfoSection("CID", cell.cid.toString())
+            CellInfoSection("RNC", cell.rnc.toString())
+        }
+        Spacer(modifier = Modifier.width(64.dp))
+        Column {
+            CellInfoSection("LAC", cell.lac.toString())
+            CellInfoSection("PSC", cell.psc.toString())
+        }
+    }
 }
