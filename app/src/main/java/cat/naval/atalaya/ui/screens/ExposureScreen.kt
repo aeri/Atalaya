@@ -1,5 +1,6 @@
 package cat.naval.atalaya.ui.screens
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -7,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -134,9 +137,11 @@ fun ExposureScreen() {
                 }
             }
         }
-        Spacer(modifier = Modifier
-            .height(16.dp)
-            .verticalScroll(rememberScrollState()))
+        Spacer(
+            modifier = Modifier
+                .height(16.dp)
+                .verticalScroll(rememberScrollState())
+        )
         Column(
             modifier = Modifier
                 .padding(15.dp, 0.dp, 15.dp, 0.dp)
@@ -168,165 +173,184 @@ fun ExposureScreen() {
 
 @Composable
 fun GsmSignalInfo(gsmSignal: MutableList<SignalGsm>) {
-    Column {
-        AssetPerformanceCard(
-            SignalInfo(
-                name = "RXL",
-                iconDrawable = 1,
-                unit = "dBm",
-                currentValue = gsmSignal.last().rssi?.toFloat() ?: 0f,
-                values = gsmSignal.mapNotNull { it.rssi?.toFloat() },
-                tickerName = "RSSI",
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(150.dp),
+        horizontalArrangement = Arrangement.spacedBy(20.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
+    ) {
+        item {
+            AssetPerformanceCard(
+                SignalInfo(
+                    name = "RXL",
+                    iconDrawable = 1,
+                    unit = "dBm",
+                    currentValue = gsmSignal.last().rssi?.toFloat() ?: 0f,
+                    values = gsmSignal.mapNotNull { it.rssi?.toFloat() },
+                    tickerName = "RSSI",
 
-                )
-        )
-        AssetPerformanceCard(
-            SignalInfo(
-                name = "TA",
-                iconDrawable = 1,
-                currentValue = 1.0f,
-                values = gsmSignal.mapNotNull { it.timingAdvance?.toFloat() },
-                tickerName = "Timing Advance",
-                unit = null
+                    )
             )
-        )
-
+        }
+        item {
+            AssetPerformanceCard(
+                SignalInfo(
+                    name = "TA",
+                    iconDrawable = 1,
+                    currentValue = 1.0f,
+                    values = gsmSignal.mapNotNull { it.timingAdvance?.toFloat() },
+                    tickerName = "Timing Advance",
+                    unit = null
+                )
+            )
+        }
     }
 }
 
 @Composable
 fun LteSignalInfo(lteSignal: MutableList<SignalLte>) {
-    Column {
-        AssetPerformanceCard(
-            SignalInfo(
-                name = "RSSI",
-                iconDrawable = 1,
-                unit = "dBm",
-                currentValue = lteSignal.last().rssi?.toFloat() ?: 0f,
-                values = lteSignal.mapNotNull { it.rssi?.toFloat() },
-                tickerName = "RSSI",
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(150.dp),
+        horizontalArrangement = Arrangement.spacedBy(20.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
+    ) {
+        item {
+            AssetPerformanceCard(
+                SignalInfo(
+                    name = "RSSI",
+                    iconDrawable = 1,
+                    unit = "dBm",
+                    currentValue = lteSignal.last().rssi?.toFloat() ?: 0f,
+                    values = lteSignal.mapNotNull { it.rssi?.toFloat() },
+                    tickerName = "RSSI",
 
+                    )
+            )
+        }
+        item {
+            AssetPerformanceCard(
+                SignalInfo(
+                    name = "RSRP",
+                    iconDrawable = 1,
+                    unit = "dBm",
+                    currentValue = lteSignal.last().rsrp?.toFloat() ?: 0f,
+                    values = lteSignal.mapNotNull { it.rsrp?.toFloat() },
+                    tickerName = "RSSI",
+
+                    )
+            )
+        }
+        item {
+            AssetPerformanceCard(
+                SignalInfo(
+                    name = "RSRQ",
+                    iconDrawable = 1,
+                    unit = "dB",
+                    currentValue = lteSignal.last().rsrq?.toFloat() ?: 0f,
+                    values = lteSignal.mapNotNull { it.rsrq?.toFloat() },
+                    tickerName = "RSRQ",
+
+                    )
+            )
+        }
+        item {
+            AssetPerformanceCard(
+                SignalInfo(
+                    name = "SNR",
+                    iconDrawable = 1,
+                    unit = "dB",
+                    currentValue = lteSignal.last().snr?.toFloat() ?: 0f,
+                    values = lteSignal.mapNotNull { it.snr?.toFloat() },
+                    tickerName = "SNR",
                 )
-        )
-        AssetPerformanceCard(
-            SignalInfo(
-                name = "RSRP",
-                iconDrawable = 1,
-                unit = "dBm",
-                currentValue = lteSignal.last().rsrp?.toFloat() ?: 0f,
-                values = lteSignal.mapNotNull { it.rsrp?.toFloat() },
-                tickerName = "RSSI",
-
-                )
-        )
-
-        AssetPerformanceCard(
-            SignalInfo(
-                name = "RSRQ",
-                iconDrawable = 1,
-                unit = "dB",
-                currentValue = lteSignal.last().rsrq?.toFloat() ?: 0f,
-                values = lteSignal.mapNotNull { it.rsrq?.toFloat() },
-                tickerName = "RSRQ",
-
-                )
-        )
-
-        AssetPerformanceCard(
-            SignalInfo(
-                name = "SNR",
-                iconDrawable = 1,
-                unit = "dB",
-                currentValue = lteSignal.last().snr?.toFloat() ?: 0f,
-                values = lteSignal.mapNotNull { it.snr?.toFloat() },
-                tickerName = "SNR",
-
-                )
-        )
-
+            )
+        }
     }
+
 }
 
 
 @Composable
 fun WcdmaSignalInfo(wcdmaSignal: MutableList<SignalWcdma>) {
-    Column {
-        AssetPerformanceCard(
-            SignalInfo(
-                name = "RSSI",
-                iconDrawable = 1,
-                unit = "dBm",
-                currentValue = wcdmaSignal.last().rssi?.toFloat() ?: 0f,
-                values = wcdmaSignal.mapNotNull { it.rssi?.toFloat() },
-                tickerName = "RSSI",
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(150.dp),
+        horizontalArrangement = Arrangement.spacedBy(20.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
+    ) {
+        item {
+            AssetPerformanceCard(
+                SignalInfo(
+                    name = "RSSI",
+                    iconDrawable = 1,
+                    unit = "dBm",
+                    currentValue = wcdmaSignal.last().rssi?.toFloat() ?: 0f,
+                    values = wcdmaSignal.mapNotNull { it.rssi?.toFloat() },
+                    tickerName = "RSSI",
 
-                )
-        )
-        AssetPerformanceCard(
-            SignalInfo(
-                name = "Ec/No",
-                iconDrawable = 1,
-                unit = "dB",
-                currentValue = wcdmaSignal.last().ecno?.toFloat() ?: 0f,
-                values = wcdmaSignal.mapNotNull { it.ecno?.toFloat() },
-                tickerName = "Ec/No",
+                    )
+            )
+        }
+        item {
+            AssetPerformanceCard(
+                SignalInfo(
+                    name = "RSCP",
+                    iconDrawable = 1,
+                    unit = "dBm",
+                    currentValue = wcdmaSignal.last().rscp?.toFloat() ?: 0f,
+                    values = wcdmaSignal.mapNotNull { it.rscp?.toFloat() },
+                    tickerName = "RSCP",
 
-                )
-        )
-
-        AssetPerformanceCard(
-            SignalInfo(
-                name = "RSCP",
-                iconDrawable = 1,
-                unit = "dBm",
-                currentValue = wcdmaSignal.last().rscp?.toFloat() ?: 0f,
-                values = wcdmaSignal.mapNotNull { it.rscp?.toFloat() },
-                tickerName = "RSCP",
-
-                )
-        )
-
+                    )
+            )
+        }
     }
 }
 
 @Composable
 fun NrSignalInfo(nrSignal: MutableList<SignalNr>) {
-    Column {
-        AssetPerformanceCard(
-            SignalInfo(
-                name = "SS RSRP",
-                iconDrawable = 1,
-                unit = "dBm",
-                currentValue = nrSignal.last().ssRsrp?.toFloat() ?: 0f,
-                values = nrSignal.mapNotNull { it.ssRsrp?.toFloat() },
-                tickerName = "SS RSRP",
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(150.dp),
+        horizontalArrangement = Arrangement.spacedBy(20.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
+    ) {
+        item {
+            AssetPerformanceCard(
+                SignalInfo(
+                    name = "SS RSRP",
+                    iconDrawable = 1,
+                    unit = "dBm",
+                    currentValue = nrSignal.last().ssRsrp?.toFloat() ?: 0f,
+                    values = nrSignal.mapNotNull { it.ssRsrp?.toFloat() },
+                    tickerName = "SS RSRP",
 
-                )
-        )
-        AssetPerformanceCard(
-            SignalInfo(
-                name = "SS RSRQ",
-                iconDrawable = 1,
-                unit = "dB",
-                currentValue = nrSignal.last().ssRsrq?.toFloat() ?: 0f,
-                values = nrSignal.mapNotNull { it.ssRsrq?.toFloat() },
-                tickerName = "SS RSRQ",
+                    )
+            )
+        }
+        item {
+            AssetPerformanceCard(
+                SignalInfo(
+                    name = "SS RSRQ",
+                    iconDrawable = 1,
+                    unit = "dB",
+                    currentValue = nrSignal.last().ssRsrq?.toFloat() ?: 0f,
+                    values = nrSignal.mapNotNull { it.ssRsrq?.toFloat() },
+                    tickerName = "SS RSRQ",
 
-                )
-        )
+                    )
+            )
+        }
+        item {
+            AssetPerformanceCard(
+                SignalInfo(
+                    name = "SS SNR",
+                    iconDrawable = 1,
+                    unit = "dB",
+                    currentValue = nrSignal.last().ssSinr?.toFloat() ?: 0f,
+                    values = nrSignal.mapNotNull { it.ssSinr?.toFloat() },
+                    tickerName = "SS SNR",
 
-        AssetPerformanceCard(
-            SignalInfo(
-                name = "SS SNR",
-                iconDrawable = 1,
-                unit = "dB",
-                currentValue = nrSignal.last().ssSinr?.toFloat() ?: 0f,
-                values = nrSignal.mapNotNull { it.ssSinr?.toFloat() },
-                tickerName = "SS SNR",
-
-                )
-        )
-
+                    )
+            )
+        }
     }
 }
 

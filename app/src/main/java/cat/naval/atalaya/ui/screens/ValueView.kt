@@ -14,9 +14,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun ValueView(currentValue: Float = 113.02211f, unit: String?) {
     Column(
-        modifier = Modifier
-            .padding(start = 10.dp),
-        horizontalAlignment = Alignment.End
+        modifier = Modifier.padding(4.dp),
     ) {
         Text(
             text = currentValue.toString(),
