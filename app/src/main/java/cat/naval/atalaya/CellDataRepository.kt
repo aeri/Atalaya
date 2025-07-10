@@ -9,6 +9,10 @@ import android.text.TextUtils
 import android.util.Log
 import cz.mroczis.netmonster.core.db.model.NetworkType
 import cz.mroczis.netmonster.core.factory.NetMonsterFactory
+import cz.mroczis.netmonster.core.feature.detect.DetectorHspaDc
+import cz.mroczis.netmonster.core.feature.detect.DetectorLteAdvancedNrDisplayInfo
+import cz.mroczis.netmonster.core.feature.detect.DetectorLteAdvancedNrServiceState
+import cz.mroczis.netmonster.core.feature.detect.DetectorLteAdvancedPhysicalChannel
 import cz.mroczis.netmonster.core.feature.merge.CellSource
 import cz.mroczis.netmonster.core.model.cell.ICell
 import kotlinx.coroutines.CoroutineScope
@@ -50,14 +54,11 @@ object CellDataRepository {
 
                     NetMonsterFactory.get(context).apply {
                         val allSources: List<ICell> = getCells() // all sources
-                        val subset: List<ICell> = getCells( // subset of available sources
-                            CellSource.ALL_CELL_INFO,
-                            CellSource.CELL_LOCATION
-                        )
                         val networkType: NetworkType = getNetworkType(0)
                         networkData.cells = allSources
                         networkData.networkType = networkType.technology
                     }
+
 
                     val manager =
                         context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager

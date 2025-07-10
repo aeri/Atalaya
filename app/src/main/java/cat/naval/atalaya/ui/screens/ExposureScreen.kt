@@ -7,8 +7,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.CellTower
+import androidx.compose.material.icons.filled.Fingerprint
+import androidx.compose.material.icons.filled.Hub
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.RadioButtonChecked
+import androidx.compose.material.icons.filled.SpaceBar
+import androidx.compose.material.icons.filled.SurroundSound
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -21,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -73,6 +82,7 @@ fun ExposureScreen() {
                 modifier = Modifier
                     .padding(0.dp, 48.dp, 0.dp, 0.dp)
                     .height(300.dp)
+                    .verticalScroll(rememberScrollState())
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
 
@@ -124,7 +134,9 @@ fun ExposureScreen() {
                 }
             }
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier
+            .height(16.dp)
+            .verticalScroll(rememberScrollState()))
         Column(
             modifier = Modifier
                 .padding(15.dp, 0.dp, 15.dp, 0.dp)
@@ -168,16 +180,16 @@ fun GsmSignalInfo(gsmSignal: MutableList<SignalGsm>) {
 
                 )
         )
-            AssetPerformanceCard(
-                SignalInfo(
-                    name = "TA",
-                    iconDrawable = 1,
-                    currentValue = 1.0f,
-                    values = gsmSignal.mapNotNull { it.timingAdvance?.toFloat() },
-                    tickerName = "Timing Advance",
-                    unit = null
-                )
+        AssetPerformanceCard(
+            SignalInfo(
+                name = "TA",
+                iconDrawable = 1,
+                currentValue = 1.0f,
+                values = gsmSignal.mapNotNull { it.timingAdvance?.toFloat() },
+                tickerName = "Timing Advance",
+                unit = null
             )
+        )
 
     }
 }
@@ -196,17 +208,17 @@ fun LteSignalInfo(lteSignal: MutableList<SignalLte>) {
 
                 )
         )
-            AssetPerformanceCard(
-                SignalInfo(
-                    name = "RSRP",
-                    iconDrawable = 1,
-                    unit = "dBm",
-                    currentValue = lteSignal.last().rsrp?.toFloat() ?: 0f,
-                    values = lteSignal.mapNotNull { it.rsrp?.toFloat() },
-                    tickerName = "RSSI",
+        AssetPerformanceCard(
+            SignalInfo(
+                name = "RSRP",
+                iconDrawable = 1,
+                unit = "dBm",
+                currentValue = lteSignal.last().rsrp?.toFloat() ?: 0f,
+                values = lteSignal.mapNotNull { it.rsrp?.toFloat() },
+                tickerName = "RSSI",
 
-                    )
-            )
+                )
+        )
 
         AssetPerformanceCard(
             SignalInfo(
@@ -319,16 +331,16 @@ fun NrSignalInfo(nrSignal: MutableList<SignalNr>) {
 }
 
 @Composable
-fun CellInfoSection(title: String, value: String) {
+fun CellInfoSection(title: String, value: String, icon: ImageVector) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(vertical = 4.dp)
     ) {
         Icon(
-            imageVector = Icons.Default.Star,
+            imageVector = icon,
             contentDescription = null
         )
-        Spacer(modifier = Modifier.width(5.dp))
+        Spacer(modifier = Modifier.width(10.dp))
         Column {
             Text(
                 text = title,
@@ -348,34 +360,33 @@ fun CellInfoSection(title: String, value: String) {
 @Composable
 fun CellGsmInfo(cell: CellGsm) {
     Column {
-        CellInfoSection("CID", cell.cid.toString())
-        CellInfoSection("LAC", cell.lac.toString())
-        CellInfoSection("BSIC", cell.bsic.toString())
+        CellInfoSection("CID", cell.cid.toString(), Icons.Default.Fingerprint)
+        CellInfoSection("LAC", cell.lac.toString(), Icons.Default.LocationOn)
+        CellInfoSection("BSIC", cell.bsic.toString(), Icons.Default.CellTower)
     }
 }
 
 @Composable
 fun CellLteInfo(cell: CellLte) {
     Row {
-        Column {
-            CellInfoSection("CI", cell.eci.toString())
-            CellInfoSection("eNB", cell.enb.toString())
-            CellInfoSection("CID", cell.cid.toString())
-        }
-        Spacer(modifier = Modifier.width(64.dp))
-        Column {
-            CellInfoSection("TAC", cell.tac.toString())
-            CellInfoSection("PCI", cell.pci.toString())
-            if (cell.bandwidth != null) {
-                CellInfoSection("BW", cell.bandwidth.toString())
-            }
-        }
         if (cell.aggregatedBands.isNotEmpty()) {
             Spacer(modifier = Modifier.width(64.dp))
             Text("CA")
-
-
         }
+        Column {
+            CellInfoSection("CI", cell.eci.toString(), Icons.Default.Fingerprint)
+            CellInfoSection("eNB", cell.enb.toString(), Icons.Default.Hub)
+            CellInfoSection("CID", cell.cid.toString(), Icons.Default.CellTower)
+        }
+        Spacer(modifier = Modifier.width(64.dp))
+        Column {
+            CellInfoSection("TAC", cell.tac.toString(), Icons.Default.LocationOn)
+            CellInfoSection("PCI", cell.pci.toString(), Icons.Default.CellTower)
+            if (cell.bandwidth != null) {
+                CellInfoSection("BW", (cell.bandwidth!! / 1000).toString(), Icons.Default.SpaceBar)
+            }
+        }
+
     }
 }
 
@@ -383,9 +394,9 @@ fun CellLteInfo(cell: CellLte) {
 fun CellNrInfo(cell: CellNr) {
     Row {
         Column {
-            CellInfoSection("NCI", cell.nci.toString())
-            CellInfoSection("TAC", cell.tac.toString())
-            CellInfoSection("PCI", cell.pci.toString())
+            CellInfoSection("NCI", cell.nci.toString(), Icons.Default.Fingerprint)
+            CellInfoSection("TAC", cell.tac.toString(), Icons.Default.CellTower)
+            CellInfoSection("PCI", cell.pci.toString(), Icons.Default.CellTower)
         }
         Spacer(modifier = Modifier.width(64.dp))
     }
@@ -395,10 +406,10 @@ fun CellNrInfo(cell: CellNr) {
 fun CellCdma(cell: CellCdma) {
     Row {
         Column {
-            CellInfoSection("NID", cell.nid.toString())
-            CellInfoSection("BID", cell.bid.toString())
-            CellInfoSection("LAT", cell.lat.toString())
-            CellInfoSection("LON", cell.lon.toString())
+            CellInfoSection("NID", cell.nid.toString(), Icons.Default.Fingerprint)
+            CellInfoSection("BID", cell.bid.toString(), Icons.Default.CellTower)
+            CellInfoSection("LAT", cell.lat.toString(), Icons.Default.LocationOn)
+            CellInfoSection("LON", cell.lon.toString(), Icons.Default.LocationOn)
         }
         Spacer(modifier = Modifier.width(64.dp))
     }
@@ -408,14 +419,14 @@ fun CellCdma(cell: CellCdma) {
 fun CellWcdmaInfo(cell: CellWcdma) {
     Row {
         Column {
-            CellInfoSection("CI", cell.ci.toString())
-            CellInfoSection("CID", cell.cid.toString())
-            CellInfoSection("RNC", cell.rnc.toString())
+            CellInfoSection("CI", cell.ci.toString(), Icons.Default.Fingerprint)
+            CellInfoSection("CID", cell.cid.toString(), Icons.Default.CellTower)
+            CellInfoSection("RNC", cell.rnc.toString(), Icons.Default.RadioButtonChecked)
         }
         Spacer(modifier = Modifier.width(64.dp))
         Column {
-            CellInfoSection("LAC", cell.lac.toString())
-            CellInfoSection("PSC", cell.psc.toString())
+            CellInfoSection("LAC", cell.lac.toString(), Icons.Default.LocationOn)
+            CellInfoSection("PSC", cell.psc.toString(), Icons.Default.SurroundSound)
         }
     }
 }
@@ -424,14 +435,14 @@ fun CellWcdmaInfo(cell: CellWcdma) {
 fun CellTdscdma(cell: CellTdscdma) {
     Row {
         Column {
-            CellInfoSection("CI", cell.ci.toString())
-            CellInfoSection("RNC", cell.rnc.toString())
-            CellInfoSection("CID", cell.cid.toString())
+            CellInfoSection("CI", cell.ci.toString(), Icons.Default.Fingerprint)
+            CellInfoSection("RNC", cell.rnc.toString(), Icons.Default.RadioButtonChecked)
+            CellInfoSection("CID", cell.cid.toString(), Icons.Default.CellTower)
         }
         Spacer(modifier = Modifier.width(64.dp))
         Column {
-            CellInfoSection("LAC", cell.lac.toString())
-            CellInfoSection("CPID", cell.cpid.toString())
+            CellInfoSection("LAC", cell.lac.toString(), Icons.Default.LocationOn)
+            CellInfoSection("CPID", cell.cpid.toString(), Icons.Default.RadioButtonChecked)
         }
     }
 }

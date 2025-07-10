@@ -23,29 +23,32 @@ class NetworkHelper {
             }
         }
 
-        fun getNetworkType(technology: Int): String = when (technology) {
-            NetworkType.GPRS -> "GPRS"
-            NetworkType.EDGE -> "EDGE"
-            NetworkType.GSM -> "GSM"
-            NetworkType.CDMA -> "CDMA"
-            NetworkType.EVDO_0 -> "EVDO rev. 0"
-            NetworkType.EVDO_A -> "EVDO rev. A"
-            NetworkType.EVDO_B -> "EVDO rev. B"
-            NetworkType.ONExRTT -> "1xRTT"
-            NetworkType.EHRPD -> "eHRPD"
-            NetworkType.IDEN -> "iDen"
-            NetworkType.UMTS -> "UMTS"
-            NetworkType.HSPA -> "HSPA"
-            NetworkType.HSPAP -> "HSPA+"
-            NetworkType.HSDPA -> "HSDPA"
-            NetworkType.HSUPA -> "HSUPA"
-            NetworkType.TD_SCDMA -> "TD-SCDMA"
-            NetworkType.LTE -> "LTE"
-            NetworkType.IWLAN -> "IWLAN"
-            NetworkType.NR -> "SA"
-            NetworkType.LTE_CA -> "LTE-A"
-            else ->
-                "LTE-A";
+        fun getNetworkType(technology: Int): String {
+            when (technology) {
+                NetworkType.GPRS -> return "GPRS"
+                NetworkType.EDGE -> return "EDGE"
+                NetworkType.GSM -> return "GSM"
+                NetworkType.CDMA -> return "CDMA"
+                NetworkType.EVDO_0 -> return "EVDO rev. 0"
+                NetworkType.EVDO_A -> return "EVDO rev. A"
+                NetworkType.EVDO_B -> return "EVDO rev. B"
+                NetworkType.ONExRTT -> return "1xRTT"
+                NetworkType.EHRPD -> return "eHRPD"
+                NetworkType.IDEN -> return "iDen"
+                NetworkType.UMTS -> return "UMTS"
+                NetworkType.HSPA -> return "HSPA"
+                NetworkType.HSPAP -> return "HSPA+"
+                NetworkType.HSDPA -> return "HSDPA"
+                NetworkType.HSUPA -> return "HSUPA"
+                NetworkType.TD_SCDMA -> return "TD-SCDMA"
+                NetworkType.LTE -> return "LTE"
+                NetworkType.IWLAN -> return "IWLAN"
+                NetworkType.NR -> return "SA"
+                NetworkType.LTE_CA -> return "LTE-A"
+                else ->
+                    return "LTE-A";
+            }
+
         }
     }
 

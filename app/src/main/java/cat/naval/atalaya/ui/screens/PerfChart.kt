@@ -1,56 +1,73 @@
 package cat.naval.atalaya.ui.screens
 
+import android.graphics.Path
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asComposePath
 
 @Composable
-fun PerformanceChart(modifier: Modifier = Modifier, list: List<Float> = listOf(10f, 20f, 3f, 1f)) {
-    val zipList: List<Pair<Float, Float>> = list.zipWithNext()
+fun PerformanceChart(
+    modifier: Modifier = Modifier,
+    list: List<Float> = listOf(10f, 20f, 3f, 1f),
+    lineColor: Color = Color.Green,
+    gradientColor: Color = Color(0x8019C37D) // Verde transparente
+) {
+    if (list.size < 2) return
 
-    if (list.isNotEmpty()) {
-        Row(modifier = modifier) {
-            val max = list.max()
-            val min = list.min()
+    val max = list.max()
+    val min = list.min()
 
-            val lineColor =
-                if (list.last() > list.first()) Color.Green else Color.Red
+    Canvas(modifier = modifier) {
+        val chartWidth = size.width
+        val chartHeight = size.height
 
-            for (pair in zipList) {
+        val step = chartWidth / (list.size - 1)
 
-                val fromValuePercentage = getValuePercentageForRange(pair.first, max, min)
-                val toValuePercentage = getValuePercentageForRange(pair.second, max, min)
+        // Calcular puntos de la línea
+        val points = list.mapIndexed { index, value ->
+            val percentage = getValuePercentageForRange(value, max, min)
+            Offset(
+                x = step * index,
+                y = chartHeight * (1 - percentage)
+            )
+        }
 
-                Canvas(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(1f),
-                    onDraw = {
-                        val fromPoint = Offset(
-                            x = 0f,
-                            y = size.height.times(1 - fromValuePercentage)
-                        ) // <-- Use times so it works for any available space
-                        val toPoint =
-                            Offset(
-                                x = size.width,
-                                y = size.height.times(1 - toValuePercentage)
-                            ) // <-- Also here!
-
-                        drawLine(
-                            color = lineColor,
-                            start = fromPoint,
-                            end = toPoint,
-                            strokeWidth = 3f
-                        )
-                    })
+        // Área rellena
+        val areaPath = Path().apply {
+            moveTo(points.first().x, chartHeight)
+            points.forEach { point ->
+                lineTo(point.x, point.y)
             }
+            lineTo(points.last().x, chartHeight)
+            close()
+        }
+
+        // Dibujar relleno con degradado
+        drawPath(
+            path = areaPath.asComposePath(),
+            brush = Brush.verticalGradient(
+                colors = listOf(gradientColor, Color.Transparent),
+                startY = 0f,
+                endY = chartHeight
+            )
+        )
+
+        // Dibujar línea de datos
+        for (i in 0 until points.size - 1) {
+            drawLine(
+                color = lineColor,
+                start = points[i],
+                end = points[i + 1],
+                strokeWidth = 3f
+            )
         }
     }
 }
 
-private fun getValuePercentageForRange(value: Float, max: Float, min: Float) =
-    (value - min) / (max - min)
+private fun getValuePercentageForRange(value: Float, max: Float, min: Float): Float {
+    return if (max == min) 0.5f else (value - min) / (max - min)
+}
