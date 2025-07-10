@@ -1,6 +1,5 @@
 package cat.naval.atalaya.ui.screens
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,17 +33,36 @@ import cz.mroczis.netmonster.core.model.cell.CellNr
 import cz.mroczis.netmonster.core.model.cell.CellTdscdma
 import cz.mroczis.netmonster.core.model.cell.CellWcdma
 import cz.mroczis.netmonster.core.model.connection.PrimaryConnection
+import cz.mroczis.netmonster.core.model.signal.SignalCdma
+import cz.mroczis.netmonster.core.model.signal.SignalGsm
+import cz.mroczis.netmonster.core.model.signal.SignalLte
+import cz.mroczis.netmonster.core.model.signal.SignalNr
+import cz.mroczis.netmonster.core.model.signal.SignalTdscdma
+import cz.mroczis.netmonster.core.model.signal.SignalWcdma
 
 @Composable
 fun ExposureScreen() {
     val networkData by CellDataRepository.networkDataFlow.collectAsState()
     val cell = networkData.cells.firstOrNull { it.connectionStatus == PrimaryConnection() }
 
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+    val gsmSignal = remember { mutableListOf<SignalGsm>() }
+    val lteSignal = remember { mutableListOf<SignalLte>() }
+    val wcdmaSignal = remember { mutableListOf<SignalWcdma>() }
+    val cdmaSignal = remember { mutableListOf<SignalCdma>() }
+    val nrSignal = remember { mutableListOf<SignalNr>() }
+    val tdscdmaSignal = remember { mutableListOf<SignalTdscdma>() }
 
-    ) {
+
+    when (val signal = cell?.signal) {
+        is SignalGsm -> gsmSignal.add(signal)
+        is SignalLte -> lteSignal.add(signal)
+        is SignalWcdma -> wcdmaSignal.add(signal)
+        is SignalNr -> nrSignal.add(signal)
+        is SignalCdma -> cdmaSignal.add(signal)
+        is SignalTdscdma -> tdscdmaSignal.add(signal)
+    }
+
+    Column {
         Card(
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.secondaryContainer
@@ -69,7 +88,14 @@ fun ExposureScreen() {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = NetMonsterHelper.decodeTechnology(cell),
+                        text = NetworkHelper.decodeTechnology(cell),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                        fontSize = 16.sp
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Text(
+                        text = NetworkHelper.getNetworkType(networkData.networkType),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
                         fontSize = 16.sp
@@ -99,13 +125,196 @@ fun ExposureScreen() {
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "Entities",
-            color = Color.White,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
+        Column(
+            modifier = Modifier
+                .padding(15.dp, 0.dp, 15.dp, 0.dp)
+                .fillMaxSize(),
+
+            ) {
+            Text(
+                textAlign = TextAlign.Left,
+                text = "Signal",
+                color = Color.Black,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+
+            when (cell) {
+                is CellGsm -> GsmSignalInfo(gsmSignal)
+                is CellWcdma -> WcdmaSignalInfo(wcdmaSignal)
+                is CellLte -> LteSignalInfo(lteSignal)
+                is CellNr -> NrSignalInfo(nrSignal)
+
+            }
+
+        }
+    }
+}
+
+
+@Composable
+fun GsmSignalInfo(gsmSignal: MutableList<SignalGsm>) {
+    Column {
+        AssetPerformanceCard(
+            SignalInfo(
+                name = "RXL",
+                iconDrawable = 1,
+                unit = "dBm",
+                currentValue = gsmSignal.last().rssi?.toFloat() ?: 0f,
+                values = gsmSignal.mapNotNull { it.rssi?.toFloat() },
+                tickerName = "RSSI",
+
+                )
         )
-        Spacer(modifier = Modifier.height(8.dp))
+            AssetPerformanceCard(
+                SignalInfo(
+                    name = "TA",
+                    iconDrawable = 1,
+                    currentValue = 1.0f,
+                    values = gsmSignal.mapNotNull { it.timingAdvance?.toFloat() },
+                    tickerName = "Timing Advance",
+                    unit = null
+                )
+            )
+
+    }
+}
+
+@Composable
+fun LteSignalInfo(lteSignal: MutableList<SignalLte>) {
+    Column {
+        AssetPerformanceCard(
+            SignalInfo(
+                name = "RSSI",
+                iconDrawable = 1,
+                unit = "dBm",
+                currentValue = lteSignal.last().rssi?.toFloat() ?: 0f,
+                values = lteSignal.mapNotNull { it.rssi?.toFloat() },
+                tickerName = "RSSI",
+
+                )
+        )
+            AssetPerformanceCard(
+                SignalInfo(
+                    name = "RSRP",
+                    iconDrawable = 1,
+                    unit = "dBm",
+                    currentValue = lteSignal.last().rsrp?.toFloat() ?: 0f,
+                    values = lteSignal.mapNotNull { it.rsrp?.toFloat() },
+                    tickerName = "RSSI",
+
+                    )
+            )
+
+        AssetPerformanceCard(
+            SignalInfo(
+                name = "RSRQ",
+                iconDrawable = 1,
+                unit = "dB",
+                currentValue = lteSignal.last().rsrq?.toFloat() ?: 0f,
+                values = lteSignal.mapNotNull { it.rsrq?.toFloat() },
+                tickerName = "RSRQ",
+
+                )
+        )
+
+        AssetPerformanceCard(
+            SignalInfo(
+                name = "SNR",
+                iconDrawable = 1,
+                unit = "dB",
+                currentValue = lteSignal.last().snr?.toFloat() ?: 0f,
+                values = lteSignal.mapNotNull { it.snr?.toFloat() },
+                tickerName = "SNR",
+
+                )
+        )
+
+    }
+}
+
+
+@Composable
+fun WcdmaSignalInfo(wcdmaSignal: MutableList<SignalWcdma>) {
+    Column {
+        AssetPerformanceCard(
+            SignalInfo(
+                name = "RSSI",
+                iconDrawable = 1,
+                unit = "dBm",
+                currentValue = wcdmaSignal.last().rssi?.toFloat() ?: 0f,
+                values = wcdmaSignal.mapNotNull { it.rssi?.toFloat() },
+                tickerName = "RSSI",
+
+                )
+        )
+        AssetPerformanceCard(
+            SignalInfo(
+                name = "Ec/No",
+                iconDrawable = 1,
+                unit = "dB",
+                currentValue = wcdmaSignal.last().ecno?.toFloat() ?: 0f,
+                values = wcdmaSignal.mapNotNull { it.ecno?.toFloat() },
+                tickerName = "Ec/No",
+
+                )
+        )
+
+        AssetPerformanceCard(
+            SignalInfo(
+                name = "RSCP",
+                iconDrawable = 1,
+                unit = "dBm",
+                currentValue = wcdmaSignal.last().rscp?.toFloat() ?: 0f,
+                values = wcdmaSignal.mapNotNull { it.rscp?.toFloat() },
+                tickerName = "RSCP",
+
+                )
+        )
+
+    }
+}
+
+@Composable
+fun NrSignalInfo(nrSignal: MutableList<SignalNr>) {
+    Column {
+        AssetPerformanceCard(
+            SignalInfo(
+                name = "SS RSRP",
+                iconDrawable = 1,
+                unit = "dBm",
+                currentValue = nrSignal.last().ssRsrp?.toFloat() ?: 0f,
+                values = nrSignal.mapNotNull { it.ssRsrp?.toFloat() },
+                tickerName = "SS RSRP",
+
+                )
+        )
+        AssetPerformanceCard(
+            SignalInfo(
+                name = "SS RSRQ",
+                iconDrawable = 1,
+                unit = "dB",
+                currentValue = nrSignal.last().ssRsrq?.toFloat() ?: 0f,
+                values = nrSignal.mapNotNull { it.ssRsrq?.toFloat() },
+                tickerName = "SS RSRQ",
+
+                )
+        )
+
+        AssetPerformanceCard(
+            SignalInfo(
+                name = "SS SNR",
+                iconDrawable = 1,
+                unit = "dB",
+                currentValue = nrSignal.last().ssSinr?.toFloat() ?: 0f,
+                values = nrSignal.mapNotNull { it.ssSinr?.toFloat() },
+                tickerName = "SS SNR",
+
+                )
+        )
+
     }
 }
 
@@ -157,13 +366,13 @@ fun CellLteInfo(cell: CellLte) {
         Column {
             CellInfoSection("TAC", cell.tac.toString())
             CellInfoSection("PCI", cell.pci.toString())
-            if (cell.bandwidth != null){
+            if (cell.bandwidth != null) {
                 CellInfoSection("BW", cell.bandwidth.toString())
             }
         }
-        if (cell.aggregatedBands.isNotEmpty()){
+        if (cell.aggregatedBands.isNotEmpty()) {
             Spacer(modifier = Modifier.width(64.dp))
-            Text("CA" )
+            Text("CA")
 
 
         }

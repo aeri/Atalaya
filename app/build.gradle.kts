@@ -66,6 +66,8 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.core)
 
+    implementation (libs.commons.csv)
+
     implementation (libs.androidx.material)
     implementation (libs.navigation.compose)
 
