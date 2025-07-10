@@ -6,6 +6,7 @@ dependencies {
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -14,7 +15,7 @@ android {
 
     defaultConfig {
         applicationId = "cat.naval.atalaya"
-        minSdk = 24
+        minSdk = 21
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -66,10 +67,10 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.core)
 
-    implementation (libs.commons.csv)
+    implementation(libs.commons.csv)
 
-    implementation (libs.androidx.material)
-    implementation (libs.navigation.compose)
+    implementation(libs.androidx.material)
+    implementation(libs.navigation.compose)
 
 
     testImplementation(libs.junit)

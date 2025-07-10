@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CellTower
@@ -115,7 +116,7 @@ fun ExposureScreen() {
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     Text(
-                        text = cell?.band?.name ?: "N/A",
+                        text = "${cell?.band?.name} / b${cell?.band?.number}",
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
                         fontSize = 16.sp
@@ -371,12 +372,14 @@ fun CellInfoSection(title: String, value: String, icon: ImageVector) {
                 color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 14.sp
             )
-            Text(
-                text = value,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold
-            )
+            SelectionContainer {
+                Text(
+                    text = value,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
 }
@@ -394,8 +397,12 @@ fun CellGsmInfo(cell: CellGsm) {
 fun CellLteInfo(cell: CellLte) {
     Row {
         if (cell.aggregatedBands.isNotEmpty()) {
-            Spacer(modifier = Modifier.width(64.dp))
-            Text("CA")
+            val bands = "";
+            cell.aggregatedBands.forEach {
+                bands.plus("+${it.name}")
+            }
+            Spacer(modifier = Modifier.width(5.dp))
+            Text(bands)
         }
         Column {
             CellInfoSection("CI", cell.eci.toString(), Icons.Default.Fingerprint)

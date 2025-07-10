@@ -14,16 +14,14 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun SignalName(name: String, tickerName: String) {
     Column(
-        modifier = Modifier.padding(4.dp)
+        modifier = Modifier.padding(bottom = 10.dp)
     ) {
         Text(
             text = name,
-            style = MaterialTheme.typography.labelMedium,
+            style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             color = Color.Black,
             overflow = TextOverflow.Ellipsis,
             maxLines = 2
-        )
-        Text(text = tickerName, style = MaterialTheme.typography.labelSmall, color = Color.Gray)
-    }
+        ) }
 }
