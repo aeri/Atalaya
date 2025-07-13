@@ -1,5 +1,6 @@
 package cat.naval.atalaya.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -58,22 +59,6 @@ fun ExposureScreen() {
     val networkData by CellDataRepository.networkDataFlow.collectAsState()
     val cell = networkData.cells.firstOrNull { it.connectionStatus == PrimaryConnection() }
 
-    val gsmSignal = remember { mutableListOf<SignalGsm>() }
-    val lteSignal = remember { mutableListOf<SignalLte>() }
-    val wcdmaSignal = remember { mutableListOf<SignalWcdma>() }
-    val cdmaSignal = remember { mutableListOf<SignalCdma>() }
-    val nrSignal = remember { mutableListOf<SignalNr>() }
-    val tdscdmaSignal = remember { mutableListOf<SignalTdscdma>() }
-
-
-    when (val signal = cell?.signal) {
-        is SignalGsm -> gsmSignal.add(signal)
-        is SignalLte -> lteSignal.add(signal)
-        is SignalWcdma -> wcdmaSignal.add(signal)
-        is SignalNr -> nrSignal.add(signal)
-        is SignalCdma -> cdmaSignal.add(signal)
-        is SignalTdscdma -> tdscdmaSignal.add(signal)
-    }
 
     Column {
         Card(
@@ -157,15 +142,15 @@ fun ExposureScreen() {
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(8.dp))
-
-
             when (cell) {
-                is CellGsm -> GsmSignalInfo(gsmSignal)
-                is CellWcdma -> WcdmaSignalInfo(wcdmaSignal)
-                is CellLte -> LteSignalInfo(lteSignal)
-                is CellNr -> NrSignalInfo(nrSignal)
+                is CellGsm -> GsmSignalInfo(networkData.gsmSignal.toList())
+                is CellWcdma -> WcdmaSignalInfo(networkData.wcdmaSignal.toList())
+                is CellLte -> LteSignalInfo(networkData.lteSignal.toList())
+                is CellNr -> NrSignalInfo(networkData.nrSignal.toList())
 
             }
+
+
 
         }
     }
@@ -173,7 +158,7 @@ fun ExposureScreen() {
 
 
 @Composable
-fun GsmSignalInfo(gsmSignal: MutableList<SignalGsm>) {
+fun GsmSignalInfo(gsmSignal: List<SignalGsm>) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(150.dp),
         horizontalArrangement = Arrangement.spacedBy(20.dp),
@@ -208,7 +193,7 @@ fun GsmSignalInfo(gsmSignal: MutableList<SignalGsm>) {
 }
 
 @Composable
-fun LteSignalInfo(lteSignal: MutableList<SignalLte>) {
+fun LteSignalInfo(lteSignal: List<SignalLte>) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(150.dp),
         horizontalArrangement = Arrangement.spacedBy(20.dp),
@@ -271,7 +256,7 @@ fun LteSignalInfo(lteSignal: MutableList<SignalLte>) {
 
 
 @Composable
-fun WcdmaSignalInfo(wcdmaSignal: MutableList<SignalWcdma>) {
+fun WcdmaSignalInfo(wcdmaSignal: List<SignalWcdma>) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(150.dp),
         horizontalArrangement = Arrangement.spacedBy(20.dp),
@@ -307,7 +292,7 @@ fun WcdmaSignalInfo(wcdmaSignal: MutableList<SignalWcdma>) {
 }
 
 @Composable
-fun NrSignalInfo(nrSignal: MutableList<SignalNr>) {
+fun NrSignalInfo(nrSignal: List<SignalNr>) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(150.dp),
         horizontalArrangement = Arrangement.spacedBy(20.dp),

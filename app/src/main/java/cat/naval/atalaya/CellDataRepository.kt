@@ -10,6 +10,13 @@ import android.util.Log
 import cz.mroczis.netmonster.core.db.model.NetworkType
 import cz.mroczis.netmonster.core.factory.NetMonsterFactory
 import cz.mroczis.netmonster.core.model.cell.ICell
+import cz.mroczis.netmonster.core.model.connection.PrimaryConnection
+import cz.mroczis.netmonster.core.model.signal.SignalCdma
+import cz.mroczis.netmonster.core.model.signal.SignalGsm
+import cz.mroczis.netmonster.core.model.signal.SignalLte
+import cz.mroczis.netmonster.core.model.signal.SignalNr
+import cz.mroczis.netmonster.core.model.signal.SignalTdscdma
+import cz.mroczis.netmonster.core.model.signal.SignalWcdma
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -41,39 +48,46 @@ object CellDataRepository {
             readCsv(it)
         }
 
+        val persistentNetworkData = NetworkData()
+
+
         CoroutineScope(Dispatchers.IO).launch {
+            val manager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+
             while (true) {
                 try {
-
-                    val networkData = NetworkData()
-
                     NetMonsterFactory.get(context).apply {
-                        val allSources: List<ICell> = getCells() // all sources
+                        val allSources: List<ICell> = getCells()
                         val networkType: NetworkType = getNetworkType(0)
-                        networkData.cells = allSources
-                        networkData.networkType = networkType.technology
+
+                        persistentNetworkData.cells = allSources
+                        persistentNetworkData.networkType = networkType.technology
                     }
-
-
-                    val manager =
-                        context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-
 
                     val networkOperator: String = manager.networkOperator
 
                     if (!TextUtils.isEmpty(networkOperator)) {
                         val mcc = networkOperator.substring(0, 3).toInt()
                         val mnc = networkOperator.substring(3).toInt()
-
-                        networkData.carrierName =
+                        persistentNetworkData.carrierName =
                             mccMnc.find { it.mcc == mcc && it.mnc == mnc }?.network
                                 ?: manager.networkOperatorName
-
-
                     }
 
-                    _networkDataFlow.value = networkData
+                    val cell = persistentNetworkData.cells.firstOrNull {
+                        it.connectionStatus == PrimaryConnection()
+                    }
 
+                    when (val signal = cell?.signal) {
+                        is SignalGsm -> persistentNetworkData.gsmSignal.add(signal)
+                        is SignalLte -> persistentNetworkData.lteSignal.add(signal)
+                        is SignalWcdma -> persistentNetworkData.wcdmaSignal.add(signal)
+                        is SignalNr -> persistentNetworkData.nrSignal.add(signal)
+                        is SignalCdma -> persistentNetworkData.cdmaSignal.add(signal)
+                        is SignalTdscdma -> persistentNetworkData.tdscdmaSignal.add(signal)
+                    }
+
+                    _networkDataFlow.value = persistentNetworkData.copy()
 
                 } catch (e: Exception) {
                     Log.e("CellDataRepository", "Error getting cells", e)
