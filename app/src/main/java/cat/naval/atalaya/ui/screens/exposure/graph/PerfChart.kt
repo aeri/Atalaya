@@ -1,4 +1,4 @@
-package cat.naval.atalaya.ui.screens
+package cat.naval.atalaya.ui.screens.exposure.graph
 
 import android.graphics.Path
 import androidx.compose.foundation.Canvas
@@ -25,10 +25,12 @@ fun PerformanceChart(
         val chartWidth = size.width
         val chartHeight = size.height
 
-        val step = chartWidth / (list.size - 1)
 
-        // Calcular puntos de la línea
-        val points = list.mapIndexed { index, value ->
+        val visiblePoints = list.takeLast(10)
+
+        val step = chartWidth / (visiblePoints.size - 1)
+
+        val points = visiblePoints.mapIndexed { index, value ->
             val percentage = getValuePercentageForRange(value, max, min)
             Offset(
                 x = step * index,

@@ -79,12 +79,12 @@ object CellDataRepository {
                     }
 
                     when (val signal = cell?.signal) {
-                        is SignalGsm -> persistentNetworkData.gsmSignal.add(signal)
-                        is SignalLte -> persistentNetworkData.lteSignal.add(signal)
-                        is SignalWcdma -> persistentNetworkData.wcdmaSignal.add(signal)
-                        is SignalNr -> persistentNetworkData.nrSignal.add(signal)
-                        is SignalCdma -> persistentNetworkData.cdmaSignal.add(signal)
-                        is SignalTdscdma -> persistentNetworkData.tdscdmaSignal.add(signal)
+                        is SignalGsm -> persistentNetworkData.gsmSignal += signal
+                        is SignalLte -> persistentNetworkData.lteSignal += signal
+                        is SignalWcdma -> persistentNetworkData.wcdmaSignal += signal
+                        is SignalNr -> persistentNetworkData.nrSignal += signal
+                        is SignalCdma -> persistentNetworkData.cdmaSignal += signal
+                        is SignalTdscdma -> persistentNetworkData.tdscdmaSignal += signal
                     }
 
                     _networkDataFlow.value = persistentNetworkData.copy()

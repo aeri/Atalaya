@@ -31,7 +31,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import cat.naval.atalaya.ui.NavigationItem
-import cat.naval.atalaya.ui.screens.ExposureScreen
+import cat.naval.atalaya.ui.screens.exposure.ExposureScreen
 import cat.naval.atalaya.ui.screens.PermissionsRequiredScreen
 import cat.naval.atalaya.ui.theme.AtalayaTheme
 

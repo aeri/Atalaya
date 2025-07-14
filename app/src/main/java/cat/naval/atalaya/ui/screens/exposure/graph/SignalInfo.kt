@@ -1,4 +1,4 @@
-package cat.naval.atalaya.ui.screens
+package cat.naval.atalaya.ui.screens.exposure.graph
 
 data class SignalInfo(
     val iconDrawable: Int,

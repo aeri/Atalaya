@@ -1,4 +1,4 @@
-package cat.naval.atalaya.ui.screens
+package cat.naval.atalaya.ui.screens.exposure.graph
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding

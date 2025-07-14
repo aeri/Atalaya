@@ -19,12 +19,12 @@ data class NetworkData (
 
     var networkType: Int = NetworkType.UNKNOWN,
 
-    val gsmSignal: MutableList<SignalGsm> = mutableListOf<SignalGsm>(),
-    val lteSignal: MutableList<SignalLte> = mutableListOf<SignalLte>(),
-    val wcdmaSignal: MutableList<SignalWcdma> = mutableListOf<SignalWcdma>(),
-    val cdmaSignal: MutableList<SignalCdma> = mutableListOf<SignalCdma>(),
-    val nrSignal: MutableList<SignalNr> = mutableListOf<SignalNr>(),
-    val tdscdmaSignal: MutableList<SignalTdscdma> = mutableListOf<SignalTdscdma>(),
+    var gsmSignal: List<SignalGsm> = emptyList(),
+    var lteSignal: List<SignalLte> =  emptyList(),
+    var wcdmaSignal: List<SignalWcdma> = emptyList(),
+    var cdmaSignal: List<SignalCdma> =  emptyList(),
+    var nrSignal: List<SignalNr> =  emptyList(),
+    var tdscdmaSignal: List<SignalTdscdma> =  emptyList(),
 
 
     )

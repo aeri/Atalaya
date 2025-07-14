@@ -1,4 +1,4 @@
-package cat.naval.atalaya.ui.screens
+package cat.naval.atalaya.ui.screens.exposure.graph
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import cat.naval.atalaya.ui.screens.exposure.graph.SignalInfo
 
 @Composable
 fun AssetPerformanceCard(
