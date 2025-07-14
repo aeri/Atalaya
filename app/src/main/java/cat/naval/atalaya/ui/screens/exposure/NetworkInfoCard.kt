@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cat.naval.atalaya.NetworkData
 import cat.naval.atalaya.ui.screens.NetworkHelper
+import cat.naval.atalaya.ui.screens.NetworkHelper.Companion.getBandText
 import cz.mroczis.netmonster.core.model.cell.CellCdma
 import cz.mroczis.netmonster.core.model.cell.CellGsm
 import cz.mroczis.netmonster.core.model.cell.CellLte
@@ -70,7 +71,16 @@ fun NetworkInfoCard(networkData: NetworkData, cell: ICell?) {
             ) {
                 InfoText(NetworkHelper.Companion.decodeTechnology(cell))
                 InfoText(NetworkHelper.Companion.getNetworkType(networkData.networkType))
-                InfoText("${cell?.band?.name} / ${cell?.band?.number}")
+                Row {
+                    if (cell?.band?.name != null) {
+                        InfoText("${cell.band?.name}")
+                    }
+                    Text("・")
+                    if (cell?.band?.name != null) {
+                        InfoText(getBandText(cell))
+                    }
+                }
+
 
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -105,7 +115,6 @@ fun CellInfoContent(cell: ICell?) {
         }
     }
 }
-
 
 
 @Composable

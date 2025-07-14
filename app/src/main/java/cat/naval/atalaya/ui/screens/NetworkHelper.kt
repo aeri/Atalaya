@@ -19,7 +19,7 @@ class NetworkHelper {
                 is CellNr -> "5G"
                 is CellCdma -> "CDMA"
                 is CellTdscdma -> "3G"
-                else -> "N/A"
+                else -> ""
             }
         }
 
@@ -49,6 +49,12 @@ class NetworkHelper {
                     return "LTE-A";
             }
 
+        }
+        fun getBandText(cell: ICell): String {
+            return when (cell) {
+                is CellNr -> "n${cell.band?.number}"
+                else -> "B${cell.band?.number}"
+            }
         }
     }
 
