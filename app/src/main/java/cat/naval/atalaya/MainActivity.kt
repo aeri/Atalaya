@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -31,17 +32,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import cat.naval.atalaya.ui.NavigationItem
-import cat.naval.atalaya.ui.screens.exposure.ExposureScreen
 import cat.naval.atalaya.ui.screens.PermissionsRequiredScreen
+import cat.naval.atalaya.ui.screens.exposure.ExposureScreen
 import cat.naval.atalaya.ui.theme.AtalayaTheme
+import java.util.Arrays
 
 class MainActivity : ComponentActivity() {
     private val permissionRequestCode = 225
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-
+    fun permissionChecker (){
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -64,18 +63,40 @@ class MainActivity : ComponentActivity() {
                 permissionRequestCode
             );
 
-        }
-        else{
+        } else {
             CellDataRepository.start(this)
-
-        }
-
-
-        setContent {
-            AtalayaTheme {
-                ExposureScreen()
+            setContent {
+                AtalayaTheme {
+                    ExposureScreen()
+                }
             }
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        permissionChecker()
+
+
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("MainActivity", "onResume")
+
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d("MainActivity", "onStop")
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        permissionChecker()
+
     }
 
 
@@ -88,23 +109,26 @@ class MainActivity : ComponentActivity() {
         when (requestCode) {
             permissionRequestCode -> {
                 // If request is cancelled, the result arrays are empty.
-                if ((grantResults.isNotEmpty() &&
-                            grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                if (Arrays.binarySearch(grantResults, PackageManager.PERMISSION_DENIED) >= 0
                 ) {
 
+                    setContent {
+                        AtalayaTheme {
+                            PermissionsRequiredScreen()
+                        }
+                    }
+
+
+                } else {
                     CellDataRepository.start(this)
+
 
                     setContent {
                         AtalayaTheme {
                             ExposureScreen()
                         }
                     }
-                } else {
-                    setContent {
-                        AtalayaTheme  {
-                            PermissionsRequiredScreen()
-                        }
-                    }
+
                 }
                 return
             }
@@ -175,10 +199,6 @@ fun EntityCard(city: String, status: String, color: Color) {
         }
     }
 }
-
-
-
-
 
 
 @Composable

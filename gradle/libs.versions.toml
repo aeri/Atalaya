@@ -1,6 +1,7 @@
 [versions]
 agp = "8.10.1"
 commonsCsv = "1.5"
+coreSplashscreen = "1.0.1"
 kotlin = "2.1.0"
 coreKtx = "1.16.0"
 junit = "4.13.2"
@@ -14,6 +15,7 @@ navigationCompose = "2.9.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-material = { module = "androidx.compose.material:material" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 commons-csv = { module = "org.apache.commons:commons-csv", version.ref = "commonsCsv" }

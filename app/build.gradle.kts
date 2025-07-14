@@ -65,6 +65,8 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.core)
 
+    implementation(libs.androidx.core.splashscreen)
+
     implementation(libs.commons.csv)
 
     implementation(libs.androidx.material)
