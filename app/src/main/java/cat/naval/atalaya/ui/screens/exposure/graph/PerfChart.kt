@@ -14,7 +14,7 @@ fun PerformanceChart(
     modifier: Modifier = Modifier,
     list: List<Float> = listOf(10f, 20f, 3f, 1f),
     lineColor: Color = Color.Green,
-    gradientColor: Color = Color(0x8019C37D) // Verde transparente
+    gradientColor: Color = Color(0x8019C37D)
 ) {
     if (list.size < 2) return
 
@@ -38,7 +38,6 @@ fun PerformanceChart(
             )
         }
 
-        // Área rellena
         val areaPath = Path().apply {
             moveTo(points.first().x, chartHeight)
             points.forEach { point ->
@@ -48,7 +47,6 @@ fun PerformanceChart(
             close()
         }
 
-        // Dibujar relleno con degradado
         drawPath(
             path = areaPath.asComposePath(),
             brush = Brush.verticalGradient(
@@ -58,7 +56,6 @@ fun PerformanceChart(
             )
         )
 
-        // Dibujar línea de datos
         for (i in 0 until points.size - 1) {
             drawLine(
                 color = lineColor,

@@ -28,12 +28,9 @@ import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVParser
 import java.io.BufferedReader
 
-
 object CellDataRepository {
-
     private val _networkDataFlow = MutableStateFlow(NetworkData())
     val networkDataFlow: StateFlow<NetworkData> = _networkDataFlow.asStateFlow()
-
 
     private var isStarted = false
     private const val FILENAME = "mcc-mnc.csv"
@@ -43,17 +40,13 @@ object CellDataRepository {
         if (isStarted) return
         isStarted = true
 
-
         val mccMnc = context.applicationContext.assets.open(FILENAME).bufferedReader().use {
             readCsv(it)
         }
-
         val persistentNetworkData = NetworkData()
-
 
         CoroutineScope(Dispatchers.IO).launch {
             val manager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-
             while (true) {
                 try {
                     NetMonsterFactory.get(context).apply {
@@ -61,9 +54,16 @@ object CellDataRepository {
                         val networkType: NetworkType = getNetworkType(0)
 
                         persistentNetworkData.cells = allSources
-                        persistentNetworkData.networkType = networkType.technology
+                        persistentNetworkData.networkType = networkType
                     }
 
+                    if (persistentNetworkData.networkType is NetworkType.Unknown) {
+                        if (isAirplaneModeOn(context)) {
+                            persistentNetworkData.isAirplaneEnabled = true
+                        }
+                    } else {
+                        persistentNetworkData.isAirplaneEnabled = false
+                    }
                     val networkOperator: String = manager.networkOperator
 
                     if (!TextUtils.isEmpty(networkOperator)) {
@@ -102,12 +102,12 @@ object CellDataRepository {
             Settings.System.getInt(
                 context.contentResolver,
                 Settings.System.AIRPLANE_MODE_ON, 0
-            ) !== 0
+            ) != 0
         } else {
             Settings.Global.getInt(
                 context.contentResolver,
                 Settings.Global.AIRPLANE_MODE_ON, 0
-            ) !== 0
+            ) != 0
         }
     }
 
@@ -124,7 +124,4 @@ object CellDataRepository {
             )
         }
     }
-
 }
-
-

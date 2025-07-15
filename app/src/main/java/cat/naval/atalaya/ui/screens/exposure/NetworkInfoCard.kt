@@ -69,7 +69,7 @@ fun NetworkInfoCard(networkData: NetworkData, cell: ICell?) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                InfoText(NetworkHelper.Companion.decodeTechnology(cell))
+                InfoText(NetworkHelper.Companion.getTechnology(networkData.networkType))
                 InfoText(NetworkHelper.Companion.getNetworkType(networkData.networkType))
                 Row {
                     if (cell?.band?.name != null) {
@@ -176,7 +176,7 @@ fun CellLteInfo(cell: CellLte) {
             CellInfoSection("TAC", cell.tac.toString(), Icons.Default.LocationOn)
             CellInfoSection("PCI", cell.pci.toString(), Icons.Default.CellTower)
             if (cell.bandwidth != null) {
-                CellInfoSection("BW", (cell.bandwidth!! / 1000).toString(), Icons.Default.SpaceBar)
+                CellInfoSection("BW", "${cell.bandwidth!! / 1000} MHz", Icons.Default.SpaceBar)
             }
         }
 

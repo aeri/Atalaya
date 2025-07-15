@@ -15,9 +15,12 @@ data class NetworkData (
 
     var carrierName: String = "",
 
+    var isAirplaneEnabled: Boolean = false,
+
+
     var cells: List<ICell> = listOf(),
 
-    var networkType: Int = NetworkType.UNKNOWN,
+    var networkType: NetworkType? = null,
 
     var gsmSignal: List<SignalGsm> = emptyList(),
     var lteSignal: List<SignalLte> =  emptyList(),

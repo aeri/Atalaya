@@ -10,23 +10,8 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Card
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -40,7 +25,7 @@ import java.util.Arrays
 class MainActivity : ComponentActivity() {
     private val permissionRequestCode = 225
 
-    fun permissionChecker (){
+    fun permissionChecker() {
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -77,9 +62,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         permissionChecker()
-
-
-
     }
 
     override fun onResume() {
@@ -99,7 +81,6 @@ class MainActivity : ComponentActivity() {
 
     }
 
-
     @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -111,40 +92,25 @@ class MainActivity : ComponentActivity() {
                 // If request is cancelled, the result arrays are empty.
                 if (Arrays.binarySearch(grantResults, PackageManager.PERMISSION_DENIED) >= 0
                 ) {
-
                     setContent {
                         AtalayaTheme {
                             PermissionsRequiredScreen()
                         }
                     }
-
-
                 } else {
                     CellDataRepository.start(this)
-
-
                     setContent {
                         AtalayaTheme {
                             ExposureScreen()
                         }
                     }
-
                 }
                 return
             }
-
-            // Add other 'when' lines to check for other
-            // permissions this app might request.
-            else -> {
-                // Ignore all other requests.
-            }
         }
     }
-
 }
 
-
-data class Message(val author: String, val body: String)
 
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_YES,
@@ -159,44 +125,6 @@ fun ExposureScreenPreview() {
     AtalayaTheme {
         ExposureScreen()
 
-    }
-}
-
-
-@Composable
-fun EntityCard(city: String, status: String, color: Color) {
-    Card(
-        modifier = Modifier
-            .size(150.dp, 150.dp)
-            .padding(8.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .background(Color.DarkGray)
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            /*
-            Image(
-                painter = painterResource(R.drawable.house_icon),
-                contentDescription = null,
-                modifier = Modifier.size(64.dp)
-            )
-             */
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = city,
-                color = Color.White,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = status,
-                color = color,
-                fontSize = 14.sp
-            )
-        }
     }
 }
 
@@ -222,6 +150,7 @@ fun Navigation(navController: NavHostController) {
 
 fun openApp(context: Context) {
     val intent = Intent("android.intent.action.MAIN")
+    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
     intent.setClassName("com.android.settings", "com.android.settings.RadioInfo")
     if (intent.resolveActivity(context.getPackageManager()) != null) {
         context.startActivity(intent)

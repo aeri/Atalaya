@@ -19,20 +19,18 @@ import cz.mroczis.netmonster.core.model.connection.PrimaryConnection
 fun ExposureScreen() {
     val networkData by CellDataRepository.networkDataFlow.collectAsState()
     val cell = networkData.cells.firstOrNull { it.connectionStatus == PrimaryConnection() }
-
-
+    
     Column {
-        NetworkInfoCard(networkData, cell)
-        Spacer(
-            modifier = Modifier
-                .height(16.dp)
-                .verticalScroll(rememberScrollState())
-        )
-        SignalSection(networkData, cell)
-
+        if (!networkData.isAirplaneEnabled) {
+            NetworkInfoCard(networkData, cell)
+            Spacer(
+                modifier = Modifier
+                    .height(16.dp)
+                    .verticalScroll(rememberScrollState())
+            )
+            SignalSection(networkData, cell)
+        } else {
+            AirplaneCard()
+        }
     }
 }
-
-
-
-

@@ -16,7 +16,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cat.naval.atalaya.NetworkData
-import cat.naval.atalaya.ui.screens.exposure.graph.SignalInfo
 import cz.mroczis.netmonster.core.model.cell.CellGsm
 import cz.mroczis.netmonster.core.model.cell.CellLte
 import cz.mroczis.netmonster.core.model.cell.CellNr
@@ -27,7 +26,7 @@ import cz.mroczis.netmonster.core.model.cell.ICell
 fun SignalSection(networkData: NetworkData, cell: ICell?) {
     Column(modifier = Modifier.padding(horizontal = 15.dp)) {
         Text(
-            text = "Signal",
+            text = "Reference signals",
             color = Color.Black,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
@@ -41,12 +40,15 @@ fun SignalSection(networkData: NetworkData, cell: ICell?) {
                     Triple("TA", { it.timingAdvance }, null)
                 )
             )
+
             is CellWcdma -> networkData.wcdmaSignal.toSignalInfoList(
                 listOf(
                     Triple("RSSI", { it.rssi }, "dBm"),
-                    Triple("RSCP", { it.rscp }, "dBm")
+                    Triple("RSCP", { it.rscp }, "dBm"),
+                    Triple("Ec/No", { it.ecno }, "dB")
                 )
             )
+
             is CellLte -> networkData.lteSignal.toSignalInfoList(
                 listOf(
                     Triple("RSSI", { it.rssi }, "dBm"),
@@ -55,6 +57,7 @@ fun SignalSection(networkData: NetworkData, cell: ICell?) {
                     Triple("SNR", { it.snr }, "dB")
                 )
             )
+
             is CellNr -> networkData.nrSignal.toSignalInfoList(
                 listOf(
                     Triple("SS RSRP", { it.ssRsrp }, "dBm"),
@@ -62,6 +65,7 @@ fun SignalSection(networkData: NetworkData, cell: ICell?) {
                     Triple("SS SNR", { it.ssSinr }, "dB")
                 )
             )
+
             else -> emptyList()
         }
 

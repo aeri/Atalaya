@@ -1,30 +1,46 @@
 package cat.naval.atalaya.ui.screens
 
 import cz.mroczis.netmonster.core.db.model.NetworkType
-import cz.mroczis.netmonster.core.model.cell.CellCdma
-import cz.mroczis.netmonster.core.model.cell.CellGsm
-import cz.mroczis.netmonster.core.model.cell.CellLte
 import cz.mroczis.netmonster.core.model.cell.CellNr
-import cz.mroczis.netmonster.core.model.cell.CellTdscdma
-import cz.mroczis.netmonster.core.model.cell.CellWcdma
 import cz.mroczis.netmonster.core.model.cell.ICell
 
 class NetworkHelper {
     companion object {
-        fun decodeTechnology(first: ICell?): String {
-            return when (first) {
-                is CellGsm -> "2G"
-                is CellWcdma -> "3G"
-                is CellLte -> "4G"
-                is CellNr -> "5G"
-                is CellCdma -> "CDMA"
-                is CellTdscdma -> "3G"
-                else -> ""
+        fun getTechnology(networkType: NetworkType?): String {
+            return when (networkType?.technology) {
+                NetworkType.GPRS,
+                NetworkType.EDGE,
+                NetworkType.GSM,
+                NetworkType.IDEN -> "2G"
+
+                NetworkType.CDMA,
+                NetworkType.EVDO_0,
+                NetworkType.EVDO_A,
+                NetworkType.EVDO_B,
+                NetworkType.ONExRTT,
+                NetworkType.EHRPD,
+                NetworkType.UMTS,
+                NetworkType.HSPA,
+                NetworkType.HSPAP,
+                NetworkType.HSDPA,
+                NetworkType.HSUPA,
+                NetworkType.TD_SCDMA,
+                NetworkType.HSPA_DC -> "3G"
+
+                NetworkType.LTE,
+                NetworkType.LTE_CA,
+                NetworkType.IWLAN,
+                NetworkType.LTE_CA_NR,
+                NetworkType.LTE_NR -> "4G"
+
+                NetworkType.NR -> "5G"
+
+                else -> "?G"
             }
         }
 
-        fun getNetworkType(technology: Int): String {
-            when (technology) {
+        fun getNetworkType(networkType: NetworkType?): String {
+            when (networkType?.technology) {
                 NetworkType.GPRS -> return "GPRS"
                 NetworkType.EDGE -> return "EDGE"
                 NetworkType.GSM -> return "GSM"
@@ -43,13 +59,23 @@ class NetworkHelper {
                 NetworkType.TD_SCDMA -> return "TD-SCDMA"
                 NetworkType.LTE -> return "LTE"
                 NetworkType.IWLAN -> return "IWLAN"
-                NetworkType.NR -> return "SA"
+                NetworkType.NR -> return "NR SA"
                 NetworkType.LTE_CA -> return "LTE-A"
+                NetworkType.HSPA_DC -> return "DC-HSPA"
+                NetworkType.LTE_NR, NetworkType.LTE_CA_NR -> {
+                    return if (networkType is NetworkType.Nr.Nsa) {
+                        "NR NSA";
+                    } else {
+                        "LTE-A";
+                    }
+                }
+
                 else ->
-                    return "LTE-A";
+                    return "?";
             }
 
         }
+
         fun getBandText(cell: ICell): String {
             return when (cell) {
                 is CellNr -> "n${cell.band?.number}"
