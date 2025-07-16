@@ -18,7 +18,7 @@ import cz.mroczis.netmonster.core.model.connection.PrimaryConnection
 fun ExposureScreen() {
     val networkData by CellDataRepository.networkDataFlow.collectAsState()
     val cell = networkData.cells.firstOrNull { it.connectionStatus == PrimaryConnection() }
-    
+
     Column {
         if (!networkData.isAirplaneEnabled) {
             NetworkInfoCard(networkData, cell)

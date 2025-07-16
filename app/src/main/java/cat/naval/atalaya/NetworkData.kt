@@ -10,8 +10,7 @@ import cz.mroczis.netmonster.core.model.signal.SignalTdscdma
 import cz.mroczis.netmonster.core.model.signal.SignalWcdma
 
 
-
-data class NetworkData (
+data class NetworkData(
 
     var carrierName: String = "",
 
@@ -23,11 +22,11 @@ data class NetworkData (
     var networkType: NetworkType? = null,
 
     var gsmSignal: List<SignalGsm> = emptyList(),
-    var lteSignal: List<SignalLte> =  emptyList(),
+    var lteSignal: List<SignalLte> = emptyList(),
     var wcdmaSignal: List<SignalWcdma> = emptyList(),
-    var cdmaSignal: List<SignalCdma> =  emptyList(),
-    var nrSignal: List<SignalNr> =  emptyList(),
-    var tdscdmaSignal: List<SignalTdscdma> =  emptyList(),
+    var cdmaSignal: List<SignalCdma> = emptyList(),
+    var nrSignal: List<SignalNr> = emptyList(),
+    var tdscdmaSignal: List<SignalTdscdma> = emptyList(),
 
 
     )

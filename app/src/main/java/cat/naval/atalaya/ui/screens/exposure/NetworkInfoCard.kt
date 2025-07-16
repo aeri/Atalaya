@@ -159,7 +159,7 @@ fun CellGsmInfo(cell: CellGsm) {
 fun CellLteInfo(cell: CellLte) {
     Row {
         if (cell.aggregatedBands.isNotEmpty()) {
-            val bands = "";
+            val bands = ""
             cell.aggregatedBands.forEach {
                 bands.plus("+${it.name}")
             }

@@ -23,5 +23,6 @@ fun SignalName(name: String) {
             color = Color.Black,
             overflow = TextOverflow.Ellipsis,
             maxLines = 2
-        ) }
+        )
+    }
 }

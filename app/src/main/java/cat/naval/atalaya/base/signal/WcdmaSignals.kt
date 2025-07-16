@@ -1,8 +1,5 @@
 package cat.naval.atalaya.base.signal
 
-import cat.naval.atalaya.base.signal.SignalMeasure
-import cat.naval.atalaya.base.signal.SignalQuality
-
 
 class WcdmaRssiSignal<T>(extractor: (T) -> Number?) : SignalMeasure<T>(
     name = "RSSI",

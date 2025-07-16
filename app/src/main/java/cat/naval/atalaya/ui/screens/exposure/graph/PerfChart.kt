@@ -22,18 +22,18 @@ fun PerformanceChart(
     if (list.size < 2) return
 
 
-    val minY =  defaultMinY
-    val maxY =  defaultMaxY
+    val minY = defaultMinY
+    val maxY = defaultMaxY
 
     val lineColor = when (quality) {
         SignalQuality.NONE -> Color(0x80ff3d00)
-        SignalQuality.POOR -> Color (0x80ff6d00)
+        SignalQuality.POOR -> Color(0x80ff6d00)
         SignalQuality.MODERATE -> Color(0x80d9bb40)
-        SignalQuality.GOOD ->  Color(0x80b6e94f)
+        SignalQuality.GOOD -> Color(0x80b6e94f)
         SignalQuality.GREAT -> Color(0x8019C37D)
     }
 
-    val gradientColor = lineColor.copy(alpha = 0.5f);
+    val gradientColor = lineColor.copy(alpha = 0.5f)
 
 
     Canvas(modifier = modifier) {

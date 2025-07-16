@@ -64,14 +64,14 @@ class NetworkHelper {
                 NetworkType.HSPA_DC -> return "DC-HSPA"
                 NetworkType.LTE_NR, NetworkType.LTE_CA_NR -> {
                     return if (networkType is NetworkType.Nr.Nsa) {
-                        "NR NSA";
+                        "NR NSA"
                     } else {
-                        "LTE-A";
+                        "LTE-A"
                     }
                 }
 
                 else ->
-                    return "?";
+                    return "?"
             }
 
         }

@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
                     Manifest.permission.ACCESS_FINE_LOCATION
                 ),
                 permissionRequestCode
-            );
+            )
 
         } else {
             CellDataRepository.start(this)
@@ -152,12 +152,12 @@ fun openApp(context: Context) {
     val intent = Intent("android.intent.action.MAIN")
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
     intent.setClassName("com.android.settings", "com.android.settings.RadioInfo")
-    if (intent.resolveActivity(context.getPackageManager()) != null) {
+    if (intent.resolveActivity(context.packageManager) != null) {
         context.startActivity(intent)
     }
     intent.setClassName("com.android.phone", "com.android.phone.settings.RadioInfo")
-    if (intent.resolveActivity(context.getPackageManager()) != null) {
-        print("Failed to open app");
+    if (intent.resolveActivity(context.packageManager) != null) {
+        print("Failed to open app")
     } else {
         context.startActivity(intent)
     }

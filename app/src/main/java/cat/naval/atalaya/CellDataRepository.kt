@@ -112,7 +112,7 @@ object CellDataRepository {
     }
 
     private fun readCsv(inputStream: BufferedReader): List<MccMnc> {
-        val csvParser = CSVParser(inputStream, CSVFormat.DEFAULT);
+        val csvParser = CSVParser(inputStream, CSVFormat.DEFAULT)
         return csvParser.drop(1).map {
             MccMnc(
                 mcc = it[0].toInt(),

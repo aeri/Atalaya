@@ -26,17 +26,16 @@ import cat.naval.atalaya.base.signal.NrRsrpSignal
 import cat.naval.atalaya.base.signal.NrRsrqSignal
 import cat.naval.atalaya.base.signal.NrSnrSignal
 import cat.naval.atalaya.base.signal.SignalInfo
+import cat.naval.atalaya.base.signal.SignalMeasure
 import cat.naval.atalaya.base.signal.WcdmaEcnoSignal
 import cat.naval.atalaya.base.signal.WcdmaRscpSignal
 import cat.naval.atalaya.base.signal.WcdmaRssiSignal
-import cat.naval.atalaya.base.signal.SignalMeasure
 import cat.naval.atalaya.ui.screens.exposure.graph.AssetPerformanceCard
 import cz.mroczis.netmonster.core.model.cell.CellGsm
 import cz.mroczis.netmonster.core.model.cell.CellLte
 import cz.mroczis.netmonster.core.model.cell.CellNr
 import cz.mroczis.netmonster.core.model.cell.CellWcdma
 import cz.mroczis.netmonster.core.model.cell.ICell
-import kotlin.collections.mapNotNull
 
 @Composable
 fun SignalSection(networkData: NetworkData, cell: ICell?) {
