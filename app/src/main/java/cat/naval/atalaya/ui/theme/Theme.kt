@@ -15,16 +15,19 @@ private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,
     tertiary = Pink80,
-    background = Color.Cyan,
-    surface = Color.Cyan,
+    background =  Color(0xff000000),
+    onSurface = Color(0xffffffff),
+    secondaryContainer = Color(0xff232323),
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = Purple40,
     secondary = PurpleGrey40,
     tertiary = Pink40,
-    background = Color.Cyan,
-    surface = Color.Cyan,
+    secondaryContainer = Color(0xffffffff),
+
+    background =  Color(0xFFF3F3F4),
+
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -41,7 +44,7 @@ private val LightColorScheme = lightColorScheme(
 fun AtalayaTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

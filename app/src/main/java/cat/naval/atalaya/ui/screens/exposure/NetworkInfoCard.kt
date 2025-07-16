@@ -52,8 +52,7 @@ fun NetworkInfoCard(networkData: NetworkData, cell: ICell?) {
     ) {
         Column(
             modifier = Modifier
-                .padding(0.dp, 48.dp, 0.dp, 0.dp)
-                .height(300.dp)
+                .padding(0.dp, 48.dp, 0.dp, 10.dp)
                 .verticalScroll(rememberScrollState())
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally

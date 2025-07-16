@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -42,11 +43,11 @@ fun SignalSection(networkData: NetworkData, cell: ICell?) {
     Column(modifier = Modifier.padding(horizontal = 15.dp)) {
         Text(
             text = "Signals",
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onSurface,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         val signalInfos = when (cell) {
             is CellGsm -> networkData.gsmSignal.toSignalInfoList(

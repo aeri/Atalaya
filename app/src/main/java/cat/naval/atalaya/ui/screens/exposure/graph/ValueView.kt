@@ -24,7 +24,7 @@ fun ValueView(currentValue: Float = 113.02211f, unit: String?) {
             text = currentValue.toString(),
             style = MaterialTheme.typography.labelLarge,
             fontWeight = FontWeight.Bold,
-            color = Color.Black
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(modifier = Modifier.width(5.dp))
 
@@ -32,7 +32,7 @@ fun ValueView(currentValue: Float = 113.02211f, unit: String?) {
             Text(
                 text = unit,
                 style = MaterialTheme.typography.labelSmall,
-                color = Color.Gray
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }

@@ -20,7 +20,7 @@ fun SignalName(name: String) {
             text = name,
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             overflow = TextOverflow.Ellipsis,
             maxLines = 2
         )
