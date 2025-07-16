@@ -8,41 +8,52 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asComposePath
+import cat.naval.atalaya.base.signal.SignalQuality
 
 @Composable
 fun PerformanceChart(
     modifier: Modifier = Modifier,
     list: List<Float> = listOf(10f, 20f, 3f, 1f),
-    lineColor: Color = Color.Green,
-    gradientColor: Color = Color(0x8019C37D)
+    quality: SignalQuality,
+    defaultMinY: Float = list.minOrNull() ?: 0f,
+    defaultMaxY: Float = list.maxOrNull() ?: 0f
+
 ) {
     if (list.size < 2) return
 
-    val max = list.max()
-    val min = list.min()
+
+    val minY =  defaultMinY
+    val maxY =  defaultMaxY
+
+    val lineColor = when (quality) {
+        SignalQuality.NONE -> Color(0x80ff3d00)
+        SignalQuality.POOR -> Color (0x80ff6d00)
+        SignalQuality.MODERATE -> Color(0x80d9bb40)
+        SignalQuality.GOOD ->  Color(0x80b6e94f)
+        SignalQuality.GREAT -> Color(0x8019C37D)
+    }
+
+    val gradientColor = lineColor.copy(alpha = 0.5f);
+
 
     Canvas(modifier = modifier) {
         val chartWidth = size.width
         val chartHeight = size.height
 
-
         val visiblePoints = list.takeLast(10)
-
         val step = chartWidth / (visiblePoints.size - 1)
 
         val points = visiblePoints.mapIndexed { index, value ->
-            val percentage = getValuePercentageForRange(value, max, min)
+            val percentage = (value - minY) / (maxY - minY)
             Offset(
                 x = step * index,
-                y = chartHeight * (1 - percentage)
+                y = chartHeight * (1 - percentage.coerceIn(0f, 1f))
             )
         }
 
         val areaPath = Path().apply {
             moveTo(points.first().x, chartHeight)
-            points.forEach { point ->
-                lineTo(point.x, point.y)
-            }
+            points.forEach { point -> lineTo(point.x, point.y) }
             lineTo(points.last().x, chartHeight)
             close()
         }
@@ -65,8 +76,4 @@ fun PerformanceChart(
             )
         }
     }
-}
-
-private fun getValuePercentageForRange(value: Float, max: Float, min: Float): Float {
-    return if (max == min) 0.5f else (value - min) / (max - min)
 }

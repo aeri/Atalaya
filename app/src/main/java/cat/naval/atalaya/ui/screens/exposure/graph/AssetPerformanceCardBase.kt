@@ -12,11 +12,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import cat.naval.atalaya.ui.screens.exposure.graph.SignalInfo
+import cat.naval.atalaya.base.signal.SignalInfo
 
 @Composable
 fun AssetPerformanceCard(
-    assetInfo: SignalInfo
+    assetInfo: SignalInfo,
 ) {
     Card(
         colors = CardDefaults.cardColors(containerColor = Color.White)
@@ -26,16 +26,20 @@ fun AssetPerformanceCard(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             PerformanceChart(
-                list = assetInfo.values,
                 modifier = Modifier
                     .height(130.dp)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                list = assetInfo.values,
+                quality = assetInfo.quality,
+                defaultMinY = assetInfo.minValue,
+                defaultMaxY = assetInfo.maxValue
+
             )
             Spacer(modifier = Modifier.height(16.dp))
             ValueView(currentValue = assetInfo.currentValue, unit = assetInfo.unit)
             Spacer(modifier = Modifier.width(5.dp))
 
-            SignalName(name = assetInfo.name, tickerName = assetInfo.tickerName)
+            SignalName(name = assetInfo.name)
 
 
         }

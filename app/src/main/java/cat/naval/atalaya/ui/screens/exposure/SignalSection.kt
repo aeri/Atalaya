@@ -1,4 +1,4 @@
-package cat.naval.atalaya.ui.screens.exposure.graph
+package cat.naval.atalaya.ui.screens.exposure
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,17 +16,33 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cat.naval.atalaya.NetworkData
+import cat.naval.atalaya.base.signal.GsmRxlSignal
+import cat.naval.atalaya.base.signal.GsmTaSignal
+import cat.naval.atalaya.base.signal.LteRsrpSignal
+import cat.naval.atalaya.base.signal.LteRsrqSignal
+import cat.naval.atalaya.base.signal.LteRssiSignal
+import cat.naval.atalaya.base.signal.LteSnrSignal
+import cat.naval.atalaya.base.signal.NrRsrpSignal
+import cat.naval.atalaya.base.signal.NrRsrqSignal
+import cat.naval.atalaya.base.signal.NrSnrSignal
+import cat.naval.atalaya.base.signal.SignalInfo
+import cat.naval.atalaya.base.signal.WcdmaEcnoSignal
+import cat.naval.atalaya.base.signal.WcdmaRscpSignal
+import cat.naval.atalaya.base.signal.WcdmaRssiSignal
+import cat.naval.atalaya.base.signal.SignalMeasure
+import cat.naval.atalaya.ui.screens.exposure.graph.AssetPerformanceCard
 import cz.mroczis.netmonster.core.model.cell.CellGsm
 import cz.mroczis.netmonster.core.model.cell.CellLte
 import cz.mroczis.netmonster.core.model.cell.CellNr
 import cz.mroczis.netmonster.core.model.cell.CellWcdma
 import cz.mroczis.netmonster.core.model.cell.ICell
+import kotlin.collections.mapNotNull
 
 @Composable
 fun SignalSection(networkData: NetworkData, cell: ICell?) {
     Column(modifier = Modifier.padding(horizontal = 15.dp)) {
         Text(
-            text = "Reference signals",
+            text = "Signals",
             color = Color.Black,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
@@ -36,33 +52,33 @@ fun SignalSection(networkData: NetworkData, cell: ICell?) {
         val signalInfos = when (cell) {
             is CellGsm -> networkData.gsmSignal.toSignalInfoList(
                 listOf(
-                    Triple("RXL", { it.rssi }, "dBm"),
-                    Triple("TA", { it.timingAdvance }, null)
+                    GsmRxlSignal { it.rssi },
+                    GsmTaSignal { it.timingAdvance },
                 )
             )
 
             is CellWcdma -> networkData.wcdmaSignal.toSignalInfoList(
                 listOf(
-                    Triple("RSSI", { it.rssi }, "dBm"),
-                    Triple("RSCP", { it.rscp }, "dBm"),
-                    Triple("Ec/No", { it.ecno }, "dB")
+                    WcdmaRssiSignal { it.rssi },
+                    WcdmaRscpSignal { it.rscp },
+                    WcdmaEcnoSignal { it.ecno },
                 )
             )
 
             is CellLte -> networkData.lteSignal.toSignalInfoList(
                 listOf(
-                    Triple("RSSI", { it.rssi }, "dBm"),
-                    Triple("RSRP", { it.rsrp }, "dBm"),
-                    Triple("RSRQ", { it.rsrq }, "dB"),
-                    Triple("SNR", { it.snr }, "dB")
+                    LteRssiSignal { it.rssi },
+                    LteRsrpSignal { it.rsrp },
+                    LteRsrqSignal { it.rsrq },
+                    LteSnrSignal { it.snr },
                 )
             )
 
             is CellNr -> networkData.nrSignal.toSignalInfoList(
                 listOf(
-                    Triple("SS RSRP", { it.ssRsrp }, "dBm"),
-                    Triple("SS RSRQ", { it.ssRsrq }, "dB"),
-                    Triple("SS SNR", { it.ssSinr }, "dB")
+                    NrRsrpSignal { it.ssRsrp },
+                    NrRsrqSignal { it.ssRsrq },
+                    NrSnrSignal { it.ssSinr },
                 )
             )
 
@@ -74,23 +90,26 @@ fun SignalSection(networkData: NetworkData, cell: ICell?) {
 }
 
 fun <T> List<T>.toSignalInfoList(
-    definitions: List<Triple<String, (T) -> Number?, String?>>
+    measures: List<SignalMeasure<T>>
 ): List<SignalInfo> {
     if (isEmpty()) return emptyList()
-    return definitions.mapNotNull { (name, extractor, unit) ->
-        val values = this.mapNotNull { extractor(it)?.toFloat() }
+    return measures.mapNotNull { measure ->
+        val values = this.mapNotNull { measure.extractor(it)?.toFloat() }
         values.takeIf { it.isNotEmpty() }?.let {
             SignalInfo(
-                name = name,
-                iconDrawable = 1,
-                unit = unit,
+                name = measure.name,
+                iconDrawable = measure.iconDrawable,
+                unit = measure.unit,
                 currentValue = it.last(),
                 values = it,
-                tickerName = name
+                quality = measure.evaluate(it.lastOrNull()),
+                maxValue = measure.maxValue,
+                minValue = measure.minValue
             )
         }
     }
 }
+
 
 @Composable
 fun SignalInfoGrid(signalInfos: List<SignalInfo>) {

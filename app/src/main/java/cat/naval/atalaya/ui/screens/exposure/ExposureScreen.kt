@@ -11,7 +11,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cat.naval.atalaya.CellDataRepository
-import cat.naval.atalaya.ui.screens.exposure.graph.SignalSection
 import cz.mroczis.netmonster.core.model.connection.PrimaryConnection
 
 

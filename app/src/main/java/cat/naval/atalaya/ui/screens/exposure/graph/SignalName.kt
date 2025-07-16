@@ -12,7 +12,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun SignalName(name: String, tickerName: String) {
+fun SignalName(name: String) {
     Column(
         modifier = Modifier.padding(bottom = 10.dp)
     ) {
