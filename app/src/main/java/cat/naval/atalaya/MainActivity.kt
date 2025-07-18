@@ -10,18 +10,46 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import cat.naval.atalaya.ui.NavigationItem
+import cat.naval.atalaya.ui.bottomnav.BottomBarScreen
+import cat.naval.atalaya.ui.bottomnav.BottomNavGraph
+
 import cat.naval.atalaya.ui.screens.PermissionsRequiredScreen
 import cat.naval.atalaya.ui.screens.exposure.ExposureScreen
 import cat.naval.atalaya.ui.theme.AtalayaTheme
@@ -30,45 +58,17 @@ import java.util.Arrays
 class MainActivity : ComponentActivity() {
     private val permissionRequestCode = 225
 
-    fun permissionChecker() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
+    fun permissionChecker() : Boolean {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(
+                Manifest.permission.READ_PHONE_STATE,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.READ_PHONE_STATE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(
-                    Manifest.permission.READ_PHONE_STATE,
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ),
-                permissionRequestCode
-            )
-
-        } else {
-            CellDataRepository.start(this)
-            setContent {
-                AtalayaTheme {
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-
-                        color = MaterialTheme.colorScheme.background
-                    )
-                    {
-                        ExposureScreen()
-                    }
-
-                }
-            }
-        }
+            ),
+            permissionRequestCode
+        )
+        return true;
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -114,12 +114,30 @@ class MainActivity : ComponentActivity() {
                     CellDataRepository.start(this)
                     setContent {
                         AtalayaTheme {
-                            ExposureScreen()
+                            MainScreen()
                         }
                     }
                 }
                 return
             }
+        }
+    }
+}
+
+@Composable
+fun MainScreen() {
+    val navController = rememberNavController()
+
+    Scaffold(
+        contentWindowInsets = WindowInsets(0.dp),
+        modifier = Modifier.fillMaxSize(),
+        bottomBar = { BottomBar(navController = navController) }
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(it).fillMaxSize()
+        ) {
+            BottomNavGraph(navController = navController)
         }
     }
 }
@@ -161,17 +179,88 @@ fun Navigation(navController: NavHostController) {
 }
 
 
-fun openApp(context: Context) {
-    val intent = Intent("android.intent.action.MAIN")
-    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-    intent.setClassName("com.android.settings", "com.android.settings.RadioInfo")
-    if (intent.resolveActivity(context.packageManager) != null) {
-        context.startActivity(intent)
+@Composable
+fun BottomBar(navController: NavHostController) {
+    val screens = listOf(
+        BottomBarScreen.Monitor,
+        BottomBarScreen.Cells,
+        BottomBarScreen.About
+    )
+
+    val navStackBackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navStackBackEntry?.destination
+
+
+    Row(
+        modifier = Modifier
+            .height(90.dp)
+            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .navigationBarsPadding()
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        screens.forEach { screen ->
+            AddItem(
+                screen = screen,
+                currentDestination = currentDestination,
+                navController = navController
+            )
+        }
     }
-    intent.setClassName("com.android.phone", "com.android.phone.settings.RadioInfo")
-    if (intent.resolveActivity(context.packageManager) != null) {
-        print("Failed to open app")
-    } else {
-        context.startActivity(intent)
+
+
+}
+
+
+@Composable
+fun AddItem(
+    screen: BottomBarScreen,
+    currentDestination: NavDestination?,
+    navController: NavHostController
+) {
+    val selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
+
+    val background =
+        if (selected) Color.Magenta.copy(alpha = 0.6f) else Color.Transparent
+
+    val contentColor =
+        if (selected) MaterialTheme.colorScheme.onSurface else Color.Gray
+
+    val interactionSource = remember { MutableInteractionSource() }
+
+    Box(
+        modifier = Modifier
+            .background(Color.Transparent)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null
+            ) {
+                navController.navigate(screen.route) {
+                    popUpTo(navController.graph.findStartDestination().id)
+                    launchSingleTop = true
+                }
+            }
+
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Icon(
+                modifier = Modifier.size(30.dp),
+                imageVector = if (selected) screen.iconFocused else screen.icon,
+                contentDescription = "icon",
+                tint = contentColor
+            )
+            AnimatedVisibility(visible = selected) {
+                Text(
+                    text = screen.title,
+                    color = contentColor
+                )
+            }
+        }
     }
 }

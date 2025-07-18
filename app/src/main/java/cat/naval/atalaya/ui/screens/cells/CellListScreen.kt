@@ -1,0 +1,161 @@
+package cat.naval.atalaya.ui.screens.cells
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import cat.naval.atalaya.CellDataRepository
+import cz.mroczis.netmonster.core.model.cell.CellCdma
+import cz.mroczis.netmonster.core.model.cell.CellGsm
+import cz.mroczis.netmonster.core.model.cell.CellLte
+import cz.mroczis.netmonster.core.model.cell.CellNr
+import cz.mroczis.netmonster.core.model.cell.CellTdscdma
+import cz.mroczis.netmonster.core.model.cell.CellWcdma
+import cz.mroczis.netmonster.core.model.cell.ICell
+
+@Composable
+fun CellListScreen() {
+    val networkData by CellDataRepository.networkDataFlow.collectAsState()
+
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 30.dp, start = 8.dp, end = 8.dp)
+
+    ) {
+
+        items(networkData.cells) { cell ->
+            LocationItemView(
+                cell, modifier = Modifier.animateItem()
+            )
+        }
+    }
+}
+
+@Composable
+fun LocationItemView(cell: ICell, modifier: Modifier = Modifier) {
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        ),
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color.Transparent)
+            .padding(12.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+
+            when (cell) {
+                is CellGsm -> CellGsmRow(cell)
+                is CellLte -> CellLteRow(cell)
+                is CellWcdma -> CellWcdmaRow(cell)
+                is CellNr -> CellNrRow(cell)
+                is CellCdma -> CellCdmaRow(cell)
+                is CellTdscdma -> CellTdscdmaRow(cell)
+                else -> Text("No cell info available")
+            }
+
+
+        }
+    }
+}
+
+@Composable
+fun CellTdscdmaRow(x0: CellTdscdma) {
+    TODO("Not yet implemented")
+}
+
+@Composable
+fun CellCdmaRow(x0: CellCdma) {
+    TODO("Not yet implemented")
+}
+
+@Composable
+fun CellNrRow(x0: CellNr) {
+    TODO("Not yet implemented")
+}
+
+@Composable
+fun CellGsmRow(cell: CellGsm) {
+    Text(
+        text = "Subscription ID: ${cell.subscriptionId}",
+        style = MaterialTheme.typography.titleMedium
+    )
+    Text(
+        text = "Network Type: ${cell.subscriptionId}",
+        style = MaterialTheme.typography.bodyMedium
+    )
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(
+            text = "Signal: ${cell.band} dBm", // ejemplo
+            style = MaterialTheme.typography.bodySmall
+        )
+
+    }
+}
+
+@Composable
+fun CellLteRow(cell: CellLte) {
+    Text(
+        text = "Subscription ID: ${cell.subscriptionId}",
+        style = MaterialTheme.typography.titleMedium
+    )
+    Text(
+        text = "Network Type: ${cell.subscriptionId}",
+        style = MaterialTheme.typography.bodyMedium
+    )
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(
+            text = "Signal: ${cell.band} dBm", // ejemplo
+            style = MaterialTheme.typography.bodySmall
+        )
+
+    }
+}
+
+@Composable
+fun CellWcdmaRow(cell: CellWcdma) {
+    Text(
+        text = "Subscription ID: ${cell.subscriptionId}",
+        style = MaterialTheme.typography.titleMedium
+    )
+    Text(
+        text = "Network Type: ${cell.subscriptionId}",
+        style = MaterialTheme.typography.bodyMedium
+    )
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(
+            text = "Signal: ${cell.band} dBm", // ejemplo
+            style = MaterialTheme.typography.bodySmall
+        )
+
+    }
+}

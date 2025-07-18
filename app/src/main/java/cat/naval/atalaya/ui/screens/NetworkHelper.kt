@@ -1,12 +1,17 @@
 package cat.naval.atalaya.ui.screens
 
 import cz.mroczis.netmonster.core.db.model.NetworkType
+import cz.mroczis.netmonster.core.model.cell.CellCdma
+import cz.mroczis.netmonster.core.model.cell.CellGsm
+import cz.mroczis.netmonster.core.model.cell.CellLte
 import cz.mroczis.netmonster.core.model.cell.CellNr
+import cz.mroczis.netmonster.core.model.cell.CellTdscdma
+import cz.mroczis.netmonster.core.model.cell.CellWcdma
 import cz.mroczis.netmonster.core.model.cell.ICell
 
 class NetworkHelper {
     companion object {
-        fun getTechnology(networkType: NetworkType?): String {
+        fun getTechnology(networkType: NetworkType?, cell: ICell?): String {
             return when (networkType?.technology) {
                 NetworkType.GPRS,
                 NetworkType.EDGE,
@@ -29,13 +34,25 @@ class NetworkHelper {
 
                 NetworkType.LTE,
                 NetworkType.LTE_CA,
-                NetworkType.IWLAN,
                 NetworkType.LTE_CA_NR,
                 NetworkType.LTE_NR -> "4G"
 
                 NetworkType.NR -> "5G"
 
-                else -> "?G"
+                else -> {
+                    return when (cell) {
+                        is CellGsm -> "2G"
+
+                        is CellCdma,
+                        is CellWcdma,
+                        is CellTdscdma -> "3G"
+
+                        is CellLte -> "4G"
+                        is CellNr -> "5G"
+
+                        else -> "?G"
+                    }
+                }
             }
         }
 

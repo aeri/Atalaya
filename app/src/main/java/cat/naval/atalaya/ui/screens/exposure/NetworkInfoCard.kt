@@ -68,7 +68,7 @@ fun NetworkInfoCard(networkData: NetworkData, cell: ICell?) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                InfoText(NetworkHelper.Companion.getTechnology(networkData.networkType))
+                InfoText(NetworkHelper.Companion.getTechnology(networkData.networkType, cell))
                 InfoText(NetworkHelper.Companion.getNetworkType(networkData.networkType))
                 Row {
                     if (cell?.band?.name != null) {
