@@ -7,11 +7,22 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.license)
+    alias(libs.plugins.serialization.json)
+}
+
+downloadLicenses {
+    dependencyConfiguration = "releaseRuntimeClasspath"
+    includeProjectDependencies = true
 }
 
 android {
     namespace = "cat.naval.atalaya"
     compileSdk = 35
+
+    sourceSets["main"].assets.srcDir("${layout.buildDirectory.get()}/reports/license")
+
+
 
     defaultConfig {
         applicationId = "cat.naval.atalaya"
@@ -53,6 +64,10 @@ android {
     }
 }
 
+tasks.named("preBuild") {
+    dependsOn("downloadLicenses")
+}
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -66,6 +81,8 @@ dependencies {
     implementation(libs.core)
 
     implementation(libs.androidx.core.splashscreen)
+
+    implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.commons.csv)
 
