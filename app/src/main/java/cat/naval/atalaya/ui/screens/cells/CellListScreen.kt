@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import cat.naval.atalaya.CellDataRepository
+import cat.naval.atalaya.ui.screens.NetworkHelper.Companion.getBandText
 import cz.mroczis.netmonster.core.model.cell.CellCdma
 import cz.mroczis.netmonster.core.model.cell.CellGsm
 import cz.mroczis.netmonster.core.model.cell.CellLte
@@ -80,28 +81,79 @@ fun LocationItemView(cell: ICell, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun CellTdscdmaRow(x0: CellTdscdma) {
-    TODO("Not yet implemented")
+fun CellTdscdmaRow(cell: CellTdscdma) {
+    Text(
+        text = "${cell.cpid}",
+        style = MaterialTheme.typography.titleMedium
+    )
+    Text(
+        text = "${cell.band?.name}・${getBandText(cell)}",
+        style = MaterialTheme.typography.bodyMedium
+    )
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(
+            text = "Signal: ${cell.band} dBm", // ejemplo
+            style = MaterialTheme.typography.bodySmall
+        )
+
+    }
 }
 
 @Composable
-fun CellCdmaRow(x0: CellCdma) {
-    TODO("Not yet implemented")
+fun CellCdmaRow(cell: CellCdma) {
+    Text(
+        text = "${cell.bid}",
+        style = MaterialTheme.typography.titleMedium
+    )
+    Text(
+        text = "${cell.band?.name}・${getBandText(cell)}",
+        style = MaterialTheme.typography.bodyMedium
+    )
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(
+            text = "Signal: ${cell.band} dBm", // ejemplo
+            style = MaterialTheme.typography.bodySmall
+        )
+
+    }
 }
 
 @Composable
-fun CellNrRow(x0: CellNr) {
-    TODO("Not yet implemented")
+fun CellNrRow(cell: CellNr) {
+    Text(
+        text = "${cell.pci}",
+        style = MaterialTheme.typography.titleMedium
+    )
+    Text(
+        text = "${cell.band?.name}・${getBandText(cell)}",
+        style = MaterialTheme.typography.bodyMedium
+    )
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(
+            text = "Signal: ${cell.band} dBm", // ejemplo
+            style = MaterialTheme.typography.bodySmall
+        )
+
+    }
 }
 
 @Composable
 fun CellGsmRow(cell: CellGsm) {
     Text(
-        text = "Subscription ID: ${cell.subscriptionId}",
+        text = "${cell.cid} ${cell.lac} ${cell.bsic}",
         style = MaterialTheme.typography.titleMedium
     )
     Text(
-        text = "Network Type: ${cell.subscriptionId}",
+        text = "${cell.band?.name}・${getBandText(cell)}",
         style = MaterialTheme.typography.bodyMedium
     )
     Row(
@@ -119,11 +171,11 @@ fun CellGsmRow(cell: CellGsm) {
 @Composable
 fun CellLteRow(cell: CellLte) {
     Text(
-        text = "Subscription ID: ${cell.subscriptionId}",
+        text = "${cell.pci}",
         style = MaterialTheme.typography.titleMedium
     )
     Text(
-        text = "Network Type: ${cell.subscriptionId}",
+        text = "${cell.band?.name}・${getBandText(cell)}",
         style = MaterialTheme.typography.bodyMedium
     )
     Row(
@@ -137,15 +189,16 @@ fun CellLteRow(cell: CellLte) {
 
     }
 }
+
 
 @Composable
 fun CellWcdmaRow(cell: CellWcdma) {
     Text(
-        text = "Subscription ID: ${cell.subscriptionId}",
+        text = "${cell.psc}",
         style = MaterialTheme.typography.titleMedium
     )
     Text(
-        text = "Network Type: ${cell.subscriptionId}",
+        text = "${cell.band?.name}・${getBandText(cell)}",
         style = MaterialTheme.typography.bodyMedium
     )
     Row(
@@ -159,3 +212,4 @@ fun CellWcdmaRow(cell: CellWcdma) {
 
     }
 }
+

@@ -1,8 +1,6 @@
 package cat.naval.atalaya
 
 import android.Manifest
-import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Bundle
@@ -19,9 +17,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -42,14 +42,10 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import cat.naval.atalaya.ui.NavigationItem
 import cat.naval.atalaya.ui.bottomnav.BottomBarScreen
 import cat.naval.atalaya.ui.bottomnav.BottomNavGraph
-
 import cat.naval.atalaya.ui.screens.PermissionsRequiredScreen
 import cat.naval.atalaya.ui.screens.exposure.ExposureScreen
 import cat.naval.atalaya.ui.theme.AtalayaTheme
@@ -58,7 +54,7 @@ import java.util.Arrays
 class MainActivity : ComponentActivity() {
     private val permissionRequestCode = 225
 
-    fun permissionChecker() : Boolean {
+    fun permissionChecker(): Boolean {
         ActivityCompat.requestPermissions(
             this,
             arrayOf(
@@ -68,7 +64,7 @@ class MainActivity : ComponentActivity() {
             ),
             permissionRequestCode
         )
-        return true;
+        return true
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -135,7 +131,8 @@ fun MainScreen() {
     ) {
         Column(
             modifier = Modifier
-                .padding(it).fillMaxSize()
+                .padding(it)
+                .fillMaxSize()
         ) {
             BottomNavGraph(navController = navController)
         }
@@ -161,26 +158,10 @@ fun ExposureScreenPreview() {
 
 
 @Composable
-fun Navigation(navController: NavHostController) {
-    NavHost(navController, startDestination = NavigationItem.Home.route) {
-        composable(NavigationItem.Home.route) {
-            ExposureScreen()
-        }
-        composable(NavigationItem.Music.route) {
-            ExposureScreen()
-        }
-        composable(NavigationItem.Movies.route) {
-            ExposureScreen()
-        }
-        composable(NavigationItem.Profile.route) {
-            ExposureScreen()
-        }
-    }
-}
-
-
-@Composable
 fun BottomBar(navController: NavHostController) {
+
+    val insets = WindowInsets.navigationBars.asPaddingValues()
+
     val screens = listOf(
         BottomBarScreen.Monitor,
         BottomBarScreen.Cells,
@@ -193,7 +174,7 @@ fun BottomBar(navController: NavHostController) {
 
     Row(
         modifier = Modifier
-            .height(90.dp)
+            .height(insets.calculateBottomPadding() + 70.dp)
             .background(MaterialTheme.colorScheme.secondaryContainer)
             .navigationBarsPadding()
             .fillMaxWidth(),
@@ -221,8 +202,7 @@ fun AddItem(
 ) {
     val selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
 
-    val background =
-        if (selected) Color.Magenta.copy(alpha = 0.6f) else Color.Transparent
+    if (selected) Color.Magenta.copy(alpha = 0.6f) else Color.Transparent
 
     val contentColor =
         if (selected) MaterialTheme.colorScheme.onSurface else Color.Gray

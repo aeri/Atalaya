@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.CellTower
 import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.Hub
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Numbers
 import androidx.compose.material.icons.filled.RadioButtonChecked
 import androidx.compose.material.icons.filled.SpaceBar
 import androidx.compose.material.icons.filled.SurroundSound
@@ -168,7 +169,7 @@ fun CellLteInfo(cell: CellLte) {
         Column {
             CellInfoSection("CI", cell.eci.toString(), Icons.Default.Fingerprint)
             CellInfoSection("eNB", cell.enb.toString(), Icons.Default.Hub)
-            CellInfoSection("CID", cell.cid.toString(), Icons.Default.CellTower)
+            CellInfoSection("CID", cell.cid.toString(), Icons.Default.Numbers)
         }
         Spacer(modifier = Modifier.width(64.dp))
         Column {
@@ -187,7 +188,7 @@ fun CellNrInfo(cell: CellNr) {
     Row {
         Column {
             CellInfoSection("NCI", cell.nci.toString(), Icons.Default.Fingerprint)
-            CellInfoSection("TAC", cell.tac.toString(), Icons.Default.CellTower)
+            CellInfoSection("TAC", cell.tac.toString(), Icons.Default.LocationOn)
             CellInfoSection("PCI", cell.pci.toString(), Icons.Default.CellTower)
         }
         Spacer(modifier = Modifier.width(64.dp))
@@ -199,9 +200,7 @@ fun CellCdma(cell: CellCdma) {
     Row {
         Column {
             CellInfoSection("NID", cell.nid.toString(), Icons.Default.Fingerprint)
-            CellInfoSection("BID", cell.bid.toString(), Icons.Default.CellTower)
-            CellInfoSection("LAT", cell.lat.toString(), Icons.Default.LocationOn)
-            CellInfoSection("LON", cell.lon.toString(), Icons.Default.LocationOn)
+            CellInfoSection("BID", cell.bid.toString(), Icons.Default.Numbers)
         }
         Spacer(modifier = Modifier.width(64.dp))
     }
@@ -212,7 +211,7 @@ fun CellWcdmaInfo(cell: CellWcdma) {
     Row {
         Column {
             CellInfoSection("CI", cell.ci.toString(), Icons.Default.Fingerprint)
-            CellInfoSection("CID", cell.cid.toString(), Icons.Default.CellTower)
+            CellInfoSection("CID", cell.cid.toString(), Icons.Default.Numbers)
             CellInfoSection("RNC", cell.rnc.toString(), Icons.Default.RadioButtonChecked)
         }
         Spacer(modifier = Modifier.width(64.dp))
@@ -229,7 +228,7 @@ fun CellTdscdma(cell: CellTdscdma) {
         Column {
             CellInfoSection("CI", cell.ci.toString(), Icons.Default.Fingerprint)
             CellInfoSection("RNC", cell.rnc.toString(), Icons.Default.RadioButtonChecked)
-            CellInfoSection("CID", cell.cid.toString(), Icons.Default.CellTower)
+            CellInfoSection("CID", cell.cid.toString(), Icons.Default.Numbers)
         }
         Spacer(modifier = Modifier.width(64.dp))
         Column {

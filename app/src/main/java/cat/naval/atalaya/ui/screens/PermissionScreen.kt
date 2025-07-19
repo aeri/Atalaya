@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,20 +31,27 @@ fun PermissionsRequiredScreen() {
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Se requieren permisos para que la aplicación funcione correctamente. Por favor, otorga los permisos necesarios.",
+            text = "Permissions are required for the application to function properly. Please grant the necessary permissions.",
             fontSize = 18.sp,
+            color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(bottom = 32.dp)
         )
 
-        Button(onClick = {
-            // Abre los ajustes de la aplicación
-            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                data = Uri.fromParts("package", context.packageName, null)
-            }
-            context.startActivity(intent)
-        }) {
-            Text(text = "Abrir ajustes")
+        Button(
+            colors = ButtonColors(
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                disabledContentColor = MaterialTheme.colorScheme.secondaryContainer,
+                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer
+            ),
+            onClick = {
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = Uri.fromParts("package", context.packageName, null)
+                }
+                context.startActivity(intent)
+            }) {
+            Text(text = "Open settings")
         }
     }
 }

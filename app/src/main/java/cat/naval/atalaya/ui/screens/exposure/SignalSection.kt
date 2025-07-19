@@ -12,7 +12,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,9 +31,11 @@ import cat.naval.atalaya.base.signal.WcdmaEcnoSignal
 import cat.naval.atalaya.base.signal.WcdmaRscpSignal
 import cat.naval.atalaya.base.signal.WcdmaRssiSignal
 import cat.naval.atalaya.ui.screens.exposure.graph.AssetPerformanceCard
+import cz.mroczis.netmonster.core.model.cell.CellCdma
 import cz.mroczis.netmonster.core.model.cell.CellGsm
 import cz.mroczis.netmonster.core.model.cell.CellLte
 import cz.mroczis.netmonster.core.model.cell.CellNr
+import cz.mroczis.netmonster.core.model.cell.CellTdscdma
 import cz.mroczis.netmonster.core.model.cell.CellWcdma
 import cz.mroczis.netmonster.core.model.cell.ICell
 
@@ -79,6 +80,20 @@ fun SignalSection(networkData: NetworkData, cell: ICell?) {
                     NrRsrpSignal { it.ssRsrp },
                     NrRsrqSignal { it.ssRsrq },
                     NrSnrSignal { it.ssSinr },
+                )
+            )
+
+            is CellCdma -> networkData.cdmaSignal.toSignalInfoList(
+                listOf(
+                    WcdmaRssiSignal { it.cdmaRssi },
+                    WcdmaEcnoSignal { it.cdmaEcio },
+                )
+            )
+
+            is CellTdscdma -> networkData.tdscdmaSignal.toSignalInfoList(
+                listOf(
+                    WcdmaRssiSignal { it.rssi },
+                    WcdmaRscpSignal { it.rscp },
                 )
             )
 

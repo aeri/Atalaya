@@ -14,21 +14,21 @@ sealed class BottomBarScreen(
     val iconFocused: ImageVector
 ) {
 
-    object Monitor: BottomBarScreen(
+    object Monitor : BottomBarScreen(
         route = "monitor",
         title = "Monitor",
         icon = Icons.Default.MonitorHeart,
         iconFocused = Icons.Default.MonitorHeart,
     )
 
-    object Cells: BottomBarScreen(
+    object Cells : BottomBarScreen(
         route = "cells",
         title = "Cells",
         icon = Icons.Default.CellTower,
         iconFocused = Icons.Default.CellTower
     )
 
-    object About: BottomBarScreen(
+    object About : BottomBarScreen(
         route = "about",
         title = "About",
         icon = Icons.Default.Icecream,

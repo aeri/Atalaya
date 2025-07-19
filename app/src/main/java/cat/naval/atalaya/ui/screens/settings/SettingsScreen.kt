@@ -72,7 +72,9 @@ fun SettingsScreen() {
 
         TextButton(
             onClick = { openRadioInfo(context) },
-            modifier = Modifier.fillMaxWidth().height(60.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp)
         ) {
             Text(
                 "Radio Info",
@@ -84,7 +86,9 @@ fun SettingsScreen() {
 
         TextButton(
             onClick = { /* Show privacy policy */ },
-            modifier = Modifier.fillMaxWidth().height(60.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp)
         ) {
             Text(
                 "Privacy Policy",
