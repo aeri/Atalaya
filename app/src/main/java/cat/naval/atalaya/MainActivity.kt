@@ -46,7 +46,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import cat.naval.atalaya.ui.bottomnav.BottomBarScreen
 import cat.naval.atalaya.ui.bottomnav.BottomNavGraph
-import cat.naval.atalaya.ui.screens.PermissionsRequiredScreen
+import cat.naval.atalaya.ui.screens.permissions.PermissionsRequiredScreen
 import cat.naval.atalaya.ui.screens.exposure.ExposureScreen
 import cat.naval.atalaya.ui.theme.AtalayaTheme
 import java.util.Arrays

@@ -1,4 +1,4 @@
-package cat.naval.atalaya.ui.screens
+package cat.naval.atalaya.ui.screens.permissions
 
 import android.content.Intent
 import android.net.Uri
@@ -47,7 +47,7 @@ fun PermissionsRequiredScreen() {
             ),
             onClick = {
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                    data = Uri.fromParts("package", context.packageName, null)
+                    data =  Uri.fromParts("package", context.packageName, null)
                 }
                 context.startActivity(intent)
             }) {

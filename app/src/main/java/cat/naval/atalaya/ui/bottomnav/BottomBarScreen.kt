@@ -33,6 +33,7 @@ sealed class BottomBarScreen(
         title = "About",
         icon = Icons.Default.Icecream,
         iconFocused = Icons.Default.Icecream,
+
     )
 
 }

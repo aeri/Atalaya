@@ -97,7 +97,7 @@ object CellDataRepository {
         }
     }
 
-    fun isAirplaneModeOn(context: Context): Boolean {
+    private fun isAirplaneModeOn(context: Context): Boolean {
         return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
             Settings.System.getInt(
                 context.contentResolver,
@@ -123,5 +123,9 @@ object CellDataRepository {
                 network = it[5],
             )
         }
+    }
+
+    fun rawData(): String {
+        return networkDataFlow.value.toString()
     }
 }

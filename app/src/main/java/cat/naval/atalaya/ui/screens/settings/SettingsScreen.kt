@@ -1,5 +1,6 @@
 package cat.naval.atalaya.ui.screens.settings
 
+import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -13,7 +14,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CopyAll
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.MiscellaneousServices
+import androidx.compose.material.icons.filled.OpenInNew
+import androidx.compose.material.icons.filled.Outbound
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -29,10 +37,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cat.naval.atalaya.CellDataRepository
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,7 +56,8 @@ fun SettingsScreen() {
     var use24hFormat by remember { mutableStateOf(true) }
 
     val context = LocalContext.current
-
+    val uriHandler = LocalUriHandler.current
+    val clipboardManager = LocalClipboardManager.current
 
 
     Column(
@@ -69,34 +84,31 @@ fun SettingsScreen() {
 
         SettingCategory("About")
 
+        SettingTileItem(
+            title = "Radio Info",
+            icon = Icons.Default.Info,
+            onClick = { openRadioInfo(context) }
+        )
 
-        TextButton(
-            onClick = { openRadioInfo(context) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
-        ) {
-            Text(
-                "Radio Info",
-                fontSize = 16.sp,
-                modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.onSurface
-            )
-        }
+        SettingTileItem(
+            title = "Source code",
+            icon = Icons.AutoMirrored.Filled.OpenInNew,
+            onClick = {
+                uriHandler.openUri("https://github.com/aeri/Atalaya")
+            }
+        )
 
-        TextButton(
-            onClick = { /* Show privacy policy */ },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
-        ) {
-            Text(
-                "Privacy Policy",
-                fontSize = 16.sp,
-                modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.onSurface
-            )
-        }
+        SettingTileItem(
+            title = "Raw data",
+            icon = Icons.Default.CopyAll,
+            onClick = {
+                val clipData = ClipData.newPlainText("raw data", CellDataRepository.rawData())
+                val clipEntry = ClipEntry(clipData)
+                clipboardManager.setClip(clipEntry)
+            }
+        )
+
+
     }
 }
 
@@ -151,6 +163,46 @@ fun SettingSwitchItem(
             }
         )
     }
+}
+
+
+@Composable
+fun SettingTileItem(
+    title: String,
+    icon: ImageVector,
+    onClick: () -> Unit
+) {
+
+    TextButton(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(60.dp),
+        colors = ButtonColors(
+            containerColor= Color.Transparent,
+        contentColor= MaterialTheme.colorScheme.onSurface,
+            disabledContainerColor = Color.Transparent,
+            disabledContentColor = Color.Transparent,
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = title,
+                modifier = Modifier.weight(1f),
+                fontSize = 16.sp
+            )
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                )
+        }
+    }
+
 }
 
 

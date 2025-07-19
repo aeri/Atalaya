@@ -22,6 +22,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import cat.naval.atalaya.CellDataRepository
+import cat.naval.atalaya.base.signal.GsmRxlSignal
+import cat.naval.atalaya.base.signal.GsmTaSignal
+import cat.naval.atalaya.base.signal.LteRsrpSignal
+import cat.naval.atalaya.base.signal.LteRsrqSignal
+import cat.naval.atalaya.base.signal.LteRssiSignal
+import cat.naval.atalaya.base.signal.LteSnrSignal
+import cat.naval.atalaya.base.signal.NrRsrpSignal
+import cat.naval.atalaya.base.signal.NrRsrqSignal
+import cat.naval.atalaya.base.signal.NrSnrSignal
+import cat.naval.atalaya.base.signal.SignalMeasure
+import cat.naval.atalaya.base.signal.WcdmaEcnoSignal
+import cat.naval.atalaya.base.signal.WcdmaRscpSignal
+import cat.naval.atalaya.base.signal.WcdmaRssiSignal
 import cat.naval.atalaya.ui.screens.NetworkHelper.Companion.getBandText
 import cz.mroczis.netmonster.core.model.cell.CellCdma
 import cz.mroczis.netmonster.core.model.cell.CellGsm
@@ -34,7 +47,6 @@ import cz.mroczis.netmonster.core.model.cell.ICell
 @Composable
 fun CellListScreen() {
     val networkData by CellDataRepository.networkDataFlow.collectAsState()
-
 
     LazyColumn(
         modifier = Modifier
@@ -95,7 +107,10 @@ fun CellTdscdmaRow(cell: CellTdscdma) {
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            text = "Signal: ${cell.band} dBm", // ejemplo
+            text = listOf(
+                WcdmaRssiSignal<Int> { cell.signal.rssi },
+                WcdmaRscpSignal<Int> { cell.signal.rscp },
+            ).joinValues(0),
             style = MaterialTheme.typography.bodySmall
         )
 
@@ -117,7 +132,10 @@ fun CellCdmaRow(cell: CellCdma) {
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            text = "Signal: ${cell.band} dBm", // ejemplo
+            text = listOf(
+                WcdmaRssiSignal<Int> { cell.signal.cdmaRssi },
+                WcdmaRssiSignal<Int> { cell.signal.cdmaEcio },
+            ).joinValues(0),
             style = MaterialTheme.typography.bodySmall
         )
 
@@ -139,7 +157,11 @@ fun CellNrRow(cell: CellNr) {
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            text = "Signal: ${cell.band} dBm", // ejemplo
+            text = listOf(
+                NrRsrpSignal<Int> { cell.signal.ssRsrp },
+                NrRsrqSignal { cell.signal.ssRsrq },
+                NrSnrSignal { cell.signal.ssSinr },
+            ).joinValues(0),
             style = MaterialTheme.typography.bodySmall
         )
 
@@ -161,7 +183,10 @@ fun CellGsmRow(cell: CellGsm) {
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            text = "Signal: ${cell.band} dBm", // ejemplo
+            text = listOf(
+                GsmRxlSignal<Int> { cell.signal.rssi },
+                GsmTaSignal<Int> { cell.signal.timingAdvance },
+            ).joinValues(0),
             style = MaterialTheme.typography.bodySmall
         )
 
@@ -183,7 +208,12 @@ fun CellLteRow(cell: CellLte) {
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            text = "Signal: ${cell.band} dBm", // ejemplo
+            text = listOf(
+                LteRssiSignal<Int> { cell.signal.rssi },
+                LteRsrpSignal { cell.signal.rsrp },
+                LteRsrqSignal { cell.signal.rsrq },
+                LteSnrSignal { cell.signal.snr },
+            ).joinValues(0),
             style = MaterialTheme.typography.bodySmall
         )
 
@@ -206,10 +236,19 @@ fun CellWcdmaRow(cell: CellWcdma) {
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            text = "Signal: ${cell.band} dBm", // ejemplo
+            text = listOf(
+                WcdmaRssiSignal<Int> { cell.signal.rssi },
+                WcdmaRscpSignal<Int> { cell.signal.rscp },
+                WcdmaEcnoSignal<Int> { cell.signal.ecno },
+            ).joinValues(0),
             style = MaterialTheme.typography.bodySmall
         )
 
     }
 }
 
+fun <T> List<SignalMeasure<T>>.joinValues(target: T): String =
+    mapNotNull { measure ->
+        val value = measure.extractor(target)
+        if (value != null) "${measure.name}: $value" else null
+    }.joinToString(" / ")
