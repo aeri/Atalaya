@@ -36,6 +36,7 @@ import cat.naval.atalaya.base.signal.WcdmaEcnoSignal
 import cat.naval.atalaya.base.signal.WcdmaRscpSignal
 import cat.naval.atalaya.base.signal.WcdmaRssiSignal
 import cat.naval.atalaya.ui.screens.NetworkHelper.Companion.getBandText
+import cat.naval.atalaya.ui.screens.exposure.AirplaneCard
 import cz.mroczis.netmonster.core.model.cell.CellCdma
 import cz.mroczis.netmonster.core.model.cell.CellGsm
 import cz.mroczis.netmonster.core.model.cell.CellLte
@@ -47,6 +48,11 @@ import cz.mroczis.netmonster.core.model.cell.ICell
 @Composable
 fun CellListScreen() {
     val networkData by CellDataRepository.networkDataFlow.collectAsState()
+
+    if (networkData.isAirplaneEnabled) {
+        AirplaneCard()
+        return
+    }
 
     LazyColumn(
         modifier = Modifier

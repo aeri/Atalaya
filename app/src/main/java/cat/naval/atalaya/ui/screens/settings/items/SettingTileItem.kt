@@ -31,8 +31,8 @@ fun SettingTileItem(
             .fillMaxWidth()
             .height(60.dp),
         colors = ButtonColors(
-            containerColor= Color.Transparent,
-            contentColor= MaterialTheme.colorScheme.onSurface,
+            containerColor = Color.Transparent,
+            contentColor = MaterialTheme.colorScheme.onSurface,
             disabledContainerColor = Color.Transparent,
             disabledContentColor = Color.Transparent,
         )

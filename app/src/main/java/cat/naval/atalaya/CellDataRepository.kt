@@ -2,7 +2,6 @@ package cat.naval.atalaya
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
 import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.text.TextUtils
@@ -98,17 +97,10 @@ object CellDataRepository {
     }
 
     private fun isAirplaneModeOn(context: Context): Boolean {
-        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            Settings.System.getInt(
-                context.contentResolver,
-                Settings.System.AIRPLANE_MODE_ON, 0
-            ) != 0
-        } else {
-            Settings.Global.getInt(
-                context.contentResolver,
-                Settings.Global.AIRPLANE_MODE_ON, 0
-            ) != 0
-        }
+        return Settings.Global.getInt(
+            context.contentResolver,
+            Settings.Global.AIRPLANE_MODE_ON, 0
+        ) != 0
     }
 
     private fun readCsv(inputStream: BufferedReader): List<MccMnc> {

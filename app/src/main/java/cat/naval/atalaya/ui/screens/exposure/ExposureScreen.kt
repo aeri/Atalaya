@@ -20,16 +20,17 @@ fun ExposureScreen() {
     val cell = networkData.cells.firstOrNull { it.connectionStatus == PrimaryConnection() }
 
     Column {
-        if (!networkData.isAirplaneEnabled) {
-            NetworkInfoCard(networkData, cell)
-            Spacer(
-                modifier = Modifier
-                    .height(16.dp)
-                    .verticalScroll(rememberScrollState())
-            )
-            SignalSection(networkData, cell)
-        } else {
+        if (networkData.isAirplaneEnabled) {
             AirplaneCard()
+            return
         }
+        NetworkInfoCard(networkData, cell)
+        Spacer(
+            modifier = Modifier
+                .height(16.dp)
+                .verticalScroll(rememberScrollState())
+        )
+        SignalSection(networkData, cell)
+
     }
 }

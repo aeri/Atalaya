@@ -34,6 +34,6 @@ sealed class BottomBarScreen(
         icon = Icons.Default.Icecream,
         iconFocused = Icons.Default.Icecream,
 
-    )
+        )
 
 }
