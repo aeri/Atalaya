@@ -100,14 +100,18 @@ fun LocationItemView(cell: ICell, modifier: Modifier = Modifier) {
 
 @Composable
 fun CellTdscdmaRow(cell: CellTdscdma) {
-    Text(
-        text = "${cell.cpid}",
-        style = MaterialTheme.typography.titleMedium
-    )
-    Text(
-        text = "${cell.band?.name}・${getBandText(cell)}",
-        style = MaterialTheme.typography.bodyMedium
-    )
+    cell.cpid?.let { id ->
+        Text(
+            text = id.toString(),
+            style = MaterialTheme.typography.titleMedium
+        )
+    }
+    cell.band?.name?.let { name ->
+        Text(
+            text = "$name・${getBandText(cell)}",
+            style = MaterialTheme.typography.bodyMedium
+        )
+    }
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxWidth()
@@ -125,14 +129,18 @@ fun CellTdscdmaRow(cell: CellTdscdma) {
 
 @Composable
 fun CellCdmaRow(cell: CellCdma) {
-    Text(
-        text = "${cell.bid}",
-        style = MaterialTheme.typography.titleMedium
-    )
-    Text(
-        text = "${cell.band?.name}・${getBandText(cell)}",
-        style = MaterialTheme.typography.bodyMedium
-    )
+    cell.bid?.let { id ->
+        Text(
+            text = id.toString(),
+            style = MaterialTheme.typography.titleMedium
+        )
+    }
+    cell.band?.name?.let { name ->
+        Text(
+            text = "$name・${getBandText(cell)}",
+            style = MaterialTheme.typography.bodyMedium
+        )
+    }
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxWidth()
@@ -150,14 +158,18 @@ fun CellCdmaRow(cell: CellCdma) {
 
 @Composable
 fun CellNrRow(cell: CellNr) {
-    Text(
-        text = "${cell.pci}",
-        style = MaterialTheme.typography.titleMedium
-    )
-    Text(
-        text = "${cell.band?.name}・${getBandText(cell)}",
-        style = MaterialTheme.typography.bodyMedium
-    )
+    cell.pci?.let { id ->
+        Text(
+            text = id.toString(),
+            style = MaterialTheme.typography.titleMedium
+        )
+    }
+    cell.band?.name?.let { name ->
+        Text(
+            text = "$name・${getBandText(cell)}",
+            style = MaterialTheme.typography.bodyMedium
+        )
+    }
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxWidth()
@@ -201,14 +213,19 @@ fun CellGsmRow(cell: CellGsm) {
 
 @Composable
 fun CellLteRow(cell: CellLte) {
-    Text(
-        text = "${cell.pci}",
-        style = MaterialTheme.typography.titleMedium
-    )
-    Text(
-        text = "${cell.band?.name}・${getBandText(cell)}",
-        style = MaterialTheme.typography.bodyMedium
-    )
+    cell.pci?.let { id ->
+        Text(
+            text = id.toString(),
+            style = MaterialTheme.typography.titleMedium
+        )
+    }
+    cell.band?.name?.let { name ->
+        Text(
+            text = "$name・${getBandText(cell)}",
+            style = MaterialTheme.typography.bodyMedium
+        )
+    }
+
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxWidth()
@@ -229,14 +246,19 @@ fun CellLteRow(cell: CellLte) {
 
 @Composable
 fun CellWcdmaRow(cell: CellWcdma) {
-    Text(
-        text = "${cell.psc}",
-        style = MaterialTheme.typography.titleMedium
-    )
-    Text(
-        text = "${cell.band?.name}・${getBandText(cell)}",
-        style = MaterialTheme.typography.bodyMedium
-    )
+    cell.psc?.let { id ->
+        Text(
+            text = id.toString(),
+            style = MaterialTheme.typography.titleMedium
+        )
+    }
+    cell.band?.name?.let { name ->
+        Text(
+            text = "$name・${getBandText(cell)}",
+            style = MaterialTheme.typography.bodyMedium
+        )
+    }
+
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxWidth()

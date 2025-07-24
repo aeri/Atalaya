@@ -8,6 +8,7 @@ import cz.mroczis.netmonster.core.model.cell.CellNr
 import cz.mroczis.netmonster.core.model.cell.CellTdscdma
 import cz.mroczis.netmonster.core.model.cell.CellWcdma
 import cz.mroczis.netmonster.core.model.cell.ICell
+import cz.mroczis.netmonster.core.model.nr.NrNsaState.Connection
 
 class NetworkHelper {
     companion object {
@@ -33,9 +34,15 @@ class NetworkHelper {
                 NetworkType.HSPA_DC -> "3G"
 
                 NetworkType.LTE,
-                NetworkType.LTE_CA,
-                NetworkType.LTE_CA_NR,
-                NetworkType.LTE_NR -> "4G"
+                NetworkType.LTE_CA ->"4G"
+
+                NetworkType.LTE_NR, NetworkType.LTE_CA_NR -> {
+                    return if (networkType is NetworkType.Nr.Nsa) {
+                        "4G + 5G"
+                    } else {
+                        "4G"
+                    }
+                }
 
                 NetworkType.NR -> "5G"
 
@@ -81,7 +88,12 @@ class NetworkHelper {
                 NetworkType.HSPA_DC -> return "DC-HSPA"
                 NetworkType.LTE_NR, NetworkType.LTE_CA_NR -> {
                     return if (networkType is NetworkType.Nr.Nsa) {
-                        "NR NSA"
+                        if (networkType.nrNsaState.connection == Connection.Connected ){
+                            return "NR NSA"
+                        }
+                        else{
+                            return "⚠ NR NSA"
+                        }
                     } else {
                         "LTE-A"
                     }

@@ -8,6 +8,10 @@ import android.text.TextUtils
 import android.util.Log
 import cz.mroczis.netmonster.core.db.model.NetworkType
 import cz.mroczis.netmonster.core.factory.NetMonsterFactory
+import cz.mroczis.netmonster.core.feature.detect.DetectorLteAdvancedCellInfo
+import cz.mroczis.netmonster.core.feature.detect.DetectorLteAdvancedNrDisplayInfo
+import cz.mroczis.netmonster.core.feature.detect.DetectorLteAdvancedPhysicalChannel
+import cz.mroczis.netmonster.core.feature.detect.DetectorNsaNr
 import cz.mroczis.netmonster.core.model.cell.ICell
 import cz.mroczis.netmonster.core.model.connection.PrimaryConnection
 import cz.mroczis.netmonster.core.model.signal.SignalCdma
@@ -46,11 +50,16 @@ object CellDataRepository {
 
         CoroutineScope(Dispatchers.IO).launch {
             val manager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+            var subscriptionId = 1;
             while (true) {
                 try {
+                    NetMonsterFactory.getSubscription(context).apply {
+                        subscriptionId = getActiveSubscriptionIds().first();
+                    }
+
                     NetMonsterFactory.get(context).apply {
                         val allSources: List<ICell> = getCells()
-                        val networkType: NetworkType = getNetworkType(0)
+                        val networkType: NetworkType = getNetworkType(subscriptionId)
 
                         persistentNetworkData.cells = allSources
                         persistentNetworkData.networkType = networkType
