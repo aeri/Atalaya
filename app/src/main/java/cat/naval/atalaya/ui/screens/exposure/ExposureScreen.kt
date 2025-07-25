@@ -25,11 +25,6 @@ fun ExposureScreen() {
             return
         }
         NetworkInfoCard(networkData, cell)
-        Spacer(
-            modifier = Modifier
-                .height(16.dp)
-                .verticalScroll(rememberScrollState())
-        )
         SignalSection(networkData, cell)
 
     }

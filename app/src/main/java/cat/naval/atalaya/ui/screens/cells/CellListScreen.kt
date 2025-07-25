@@ -118,7 +118,7 @@ fun CellTdscdmaRow(cell: CellTdscdma) {
     ) {
         Text(
             text = listOf(
-                WcdmaRssiSignal<Int> { cell.signal.rssi },
+                WcdmaRssiSignal { cell.signal.rssi },
                 WcdmaRscpSignal<Int> { cell.signal.rscp },
             ).joinValues(0),
             style = MaterialTheme.typography.bodySmall
@@ -148,7 +148,7 @@ fun CellCdmaRow(cell: CellCdma) {
         Text(
             text = listOf(
                 WcdmaRssiSignal<Int> { cell.signal.cdmaRssi },
-                WcdmaRssiSignal<Int> { cell.signal.cdmaEcio },
+                WcdmaRssiSignal { cell.signal.cdmaEcio },
             ).joinValues(0),
             style = MaterialTheme.typography.bodySmall
         )
@@ -189,7 +189,7 @@ fun CellNrRow(cell: CellNr) {
 @Composable
 fun CellGsmRow(cell: CellGsm) {
     Text(
-        text = "${cell.cid} ${cell.lac} ${cell.bsic}",
+        text = "${cell.cid ?: "-"} ${cell.lac ?: "-"} ${cell.bsic ?: "-"}",
         style = MaterialTheme.typography.titleMedium
     )
     Text(
@@ -203,7 +203,7 @@ fun CellGsmRow(cell: CellGsm) {
         Text(
             text = listOf(
                 GsmRxlSignal<Int> { cell.signal.rssi },
-                GsmTaSignal<Int> { cell.signal.timingAdvance },
+                GsmTaSignal { cell.signal.timingAdvance },
             ).joinValues(0),
             style = MaterialTheme.typography.bodySmall
         )
@@ -266,8 +266,8 @@ fun CellWcdmaRow(cell: CellWcdma) {
         Text(
             text = listOf(
                 WcdmaRssiSignal<Int> { cell.signal.rssi },
-                WcdmaRscpSignal<Int> { cell.signal.rscp },
-                WcdmaEcnoSignal<Int> { cell.signal.ecno },
+                WcdmaRscpSignal { cell.signal.rscp },
+                WcdmaEcnoSignal { cell.signal.ecno },
             ).joinValues(0),
             style = MaterialTheme.typography.bodySmall
         )

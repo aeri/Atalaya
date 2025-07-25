@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun SettingSwitchItem(
+private fun SettingSwitchItem(
     title: String,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit

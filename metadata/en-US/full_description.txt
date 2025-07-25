@@ -1,0 +1,3 @@
+An open-source mobile cell tower monitor that provides detailed information about the antenna your device is connected to, such as its identifiers, radio technology type, bands in use, and signal quality with its most representative values.
+
+It can interpret GSM, CDMA, WCDMA, TD-SCDMA, LTE, LTE+, 5G NSA, and 5G SA technologies.

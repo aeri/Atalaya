@@ -1,0 +1,3 @@
+Un monitor de torres de telefonía móvil de código abierto con el que puedes obtener información detallada sobre la antena a la que está conectado tu dispositivo, como sus identificadores, tipo de tecnología de radio, bandas en uso y la calidad de las señales con sus valores más representativos.
+
+Puede interpretar las tecnologías GSM, CDMA, WCDMA, TD-SCDMA, LTE, LTE+, 5G NSA y 5G SA.

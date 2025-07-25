@@ -69,8 +69,8 @@ fun NetworkInfoCard(networkData: NetworkData, cell: ICell?) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                InfoText(NetworkHelper.Companion.getTechnology(networkData.networkType, cell))
-                InfoText(NetworkHelper.Companion.getNetworkType(networkData.networkType))
+                InfoText(NetworkHelper.getTechnology(networkData.networkType, cell))
+                InfoText(NetworkHelper.getNetworkType(networkData.networkType))
                 Row {
                     if (cell?.band?.name != null) {
                         InfoText("${cell.band?.name}")
@@ -80,10 +80,16 @@ fun NetworkInfoCard(networkData: NetworkData, cell: ICell?) {
                         InfoText(getBandText(cell))
                     }
                 }
-
-
             }
             Spacer(modifier = Modifier.height(16.dp))
+            if (cell is CellLte && cell.aggregatedBands.isNotEmpty())  {
+                val bands = ""
+                cell.aggregatedBands.forEach {
+                    bands.plus("+${it.name}")
+                }
+                Spacer(modifier = Modifier.width(5.dp))
+                Text(bands)
+            }
             CellInfoContent(cell)
 
         }
@@ -158,14 +164,6 @@ fun CellGsmInfo(cell: CellGsm) {
 @Composable
 fun CellLteInfo(cell: CellLte) {
     Row {
-        if (cell.aggregatedBands.isNotEmpty()) {
-            val bands = ""
-            cell.aggregatedBands.forEach {
-                bands.plus("+${it.name}")
-            }
-            Spacer(modifier = Modifier.width(5.dp))
-            Text(bands)
-        }
         Column {
             CellInfoSection("CI", cell.eci.toString(), Icons.Default.Fingerprint)
             CellInfoSection("eNB", cell.enb.toString(), Icons.Default.Hub)

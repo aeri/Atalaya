@@ -22,9 +22,6 @@ fun PerformanceChart(
     if (list.size < 2) return
 
 
-    val minY = defaultMinY
-    val maxY = defaultMaxY
-
     val lineColor = when (quality) {
         SignalQuality.NONE -> Color(0x80ff3d00)
         SignalQuality.POOR -> Color(0x80ff6d00)
@@ -44,7 +41,7 @@ fun PerformanceChart(
         val step = chartWidth / (visiblePoints.size - 1)
 
         val points = visiblePoints.mapIndexed { index, value ->
-            val percentage = (value - minY) / (maxY - minY)
+            val percentage = (value - defaultMinY) / (defaultMaxY - defaultMinY)
             Offset(
                 x = step * index,
                 y = chartHeight * (1 - percentage.coerceIn(0f, 1f))

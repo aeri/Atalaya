@@ -54,7 +54,7 @@ import java.util.Arrays
 class MainActivity : ComponentActivity() {
     private val permissionRequestCode = 225
 
-    fun permissionChecker(): Boolean {
+    private fun permissionChecker() {
         ActivityCompat.requestPermissions(
             this,
             arrayOf(
@@ -64,7 +64,6 @@ class MainActivity : ComponentActivity() {
             ),
             permissionRequestCode
         )
-        return true
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

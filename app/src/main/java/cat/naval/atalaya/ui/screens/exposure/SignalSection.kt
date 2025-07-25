@@ -41,7 +41,7 @@ import cz.mroczis.netmonster.core.model.cell.ICell
 
 @Composable
 fun SignalSection(networkData: NetworkData, cell: ICell?) {
-    Column(modifier = Modifier.padding(horizontal = 15.dp)) {
+    Column(modifier = Modifier.padding(horizontal = 15.dp, vertical = 10.dp)) {
         Text(
             text = "Signals",
             color = MaterialTheme.colorScheme.onSurface,
