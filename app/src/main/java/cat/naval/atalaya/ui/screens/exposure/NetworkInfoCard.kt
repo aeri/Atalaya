@@ -93,7 +93,7 @@ fun NetworkInfoCard(networkData: NetworkData, cell: ICell?) {
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
-            if (cell is CellLte && cell.aggregatedBands.isNotEmpty())  {
+            if (cell is CellLte && cell.aggregatedBands.isNotEmpty()) {
                 val bands = ""
                 cell.aggregatedBands.forEach {
                     bands.plus("+${it.name}")

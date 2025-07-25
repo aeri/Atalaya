@@ -34,7 +34,7 @@ class NetworkHelper {
                 NetworkType.HSPA_DC -> "3G"
 
                 NetworkType.LTE,
-                NetworkType.LTE_CA ->"4G"
+                NetworkType.LTE_CA -> "4G"
 
                 NetworkType.LTE_NR, NetworkType.LTE_CA_NR -> {
                     return if (networkType is NetworkType.Nr.Nsa) {
@@ -88,10 +88,9 @@ class NetworkHelper {
                 NetworkType.HSPA_DC -> return "DC-HSPA"
                 NetworkType.LTE_NR, NetworkType.LTE_CA_NR -> {
                     return if (networkType is NetworkType.Nr.Nsa) {
-                        if (networkType.nrNsaState.connection == Connection.Connected ){
+                        if (networkType.nrNsaState.connection == Connection.Connected) {
                             return "NR NSA"
-                        }
-                        else{
+                        } else {
                             return "⚠ NR NSA"
                         }
                     } else {

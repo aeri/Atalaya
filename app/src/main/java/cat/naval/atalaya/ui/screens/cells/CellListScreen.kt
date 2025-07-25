@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import cat.naval.atalaya.CellDataRepository
+import cat.naval.atalaya.base.network.NetworkHelper.Companion.getBandText
 import cat.naval.atalaya.base.signal.GsmRxlSignal
 import cat.naval.atalaya.base.signal.GsmTaSignal
 import cat.naval.atalaya.base.signal.LteRsrpSignal
@@ -35,7 +36,6 @@ import cat.naval.atalaya.base.signal.SignalMeasure
 import cat.naval.atalaya.base.signal.WcdmaEcnoSignal
 import cat.naval.atalaya.base.signal.WcdmaRscpSignal
 import cat.naval.atalaya.base.signal.WcdmaRssiSignal
-import cat.naval.atalaya.base.network.NetworkHelper.Companion.getBandText
 import cat.naval.atalaya.ui.screens.exposure.AirplaneCard
 import cz.mroczis.netmonster.core.model.cell.CellCdma
 import cz.mroczis.netmonster.core.model.cell.CellGsm

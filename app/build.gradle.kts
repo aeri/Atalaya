@@ -1,10 +1,6 @@
 import java.io.FileInputStream
 import java.util.Properties
 
-dependencies {
-    implementation(libs.androidx.material.icons.extended)
-}
-
 
 plugins {
     alias(libs.plugins.android.application)
@@ -26,10 +22,7 @@ android {
 
     sourceSets["main"].assets.srcDir("${layout.buildDirectory.get()}/reports/license")
 
-
-
     signingConfigs {
-
         val keystorePropertiesFile = file("../keystore.properties")
         if (!keystorePropertiesFile.exists()) {
             logger.warn("Release builds may not work: signing config not found.")
@@ -52,7 +45,7 @@ android {
         minSdk = 21
         targetSdk = 35
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -94,6 +87,7 @@ tasks.named("preBuild") {
 
 dependencies {
 
+    implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
