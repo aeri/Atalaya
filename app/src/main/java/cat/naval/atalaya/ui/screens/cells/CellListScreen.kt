@@ -35,7 +35,7 @@ import cat.naval.atalaya.base.signal.SignalMeasure
 import cat.naval.atalaya.base.signal.WcdmaEcnoSignal
 import cat.naval.atalaya.base.signal.WcdmaRscpSignal
 import cat.naval.atalaya.base.signal.WcdmaRssiSignal
-import cat.naval.atalaya.ui.screens.NetworkHelper.Companion.getBandText
+import cat.naval.atalaya.base.network.NetworkHelper.Companion.getBandText
 import cat.naval.atalaya.ui.screens.exposure.AirplaneCard
 import cz.mroczis.netmonster.core.model.cell.CellCdma
 import cz.mroczis.netmonster.core.model.cell.CellGsm

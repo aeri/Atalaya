@@ -1,4 +1,4 @@
-package cat.naval.atalaya
+package cat.naval.atalaya.base.network
 
 import cz.mroczis.netmonster.core.db.model.NetworkType
 import cz.mroczis.netmonster.core.model.cell.ICell

@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cat.naval.atalaya.NetworkData
+import cat.naval.atalaya.base.network.NetworkData
 import cat.naval.atalaya.base.signal.GsmRxlSignal
 import cat.naval.atalaya.base.signal.GsmTaSignal
 import cat.naval.atalaya.base.signal.LteRsrpSignal

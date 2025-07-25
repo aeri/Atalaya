@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -28,13 +30,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cat.naval.atalaya.NetworkData
-import cat.naval.atalaya.ui.screens.NetworkHelper
-import cat.naval.atalaya.ui.screens.NetworkHelper.Companion.getBandText
+import cat.naval.atalaya.base.network.NetworkData
+import cat.naval.atalaya.base.network.NetworkHelper
+import cat.naval.atalaya.base.network.NetworkHelper.Companion.getBandText
 import cz.mroczis.netmonster.core.model.cell.CellCdma
 import cz.mroczis.netmonster.core.model.cell.CellGsm
 import cz.mroczis.netmonster.core.model.cell.CellLte
@@ -59,11 +62,19 @@ fun NetworkInfoCard(networkData: NetworkData, cell: ICell?) {
             horizontalAlignment = Alignment.CenterHorizontally
 
         ) {
-            Text(
+            BasicText(
                 text = networkData.carrierName,
-                color = MaterialTheme.colorScheme.onSurface,
-                fontSize = 40.sp,
-                fontWeight = FontWeight.Bold
+                style = TextStyle(
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontSize = 40.sp,
+                    fontWeight = FontWeight.Bold
+                ),
+                maxLines = 1,
+                autoSize = TextAutoSize.StepBased(
+                    minFontSize = 12.sp,
+                    maxFontSize = 40.sp,
+                    stepSize = 1.sp
+                )
             )
             Spacer(modifier = Modifier.height(8.dp))
             Row(
