@@ -71,15 +71,15 @@ fun LicensesBottomSheet() {
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Text(
-                                    text = entry.name,
+                                    text = entry.moduleName,
                                     fontWeight = FontWeight.Bold
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
-                                entry.licenses.forEach { lic ->
-                                    Text(
-                                        text = lic.name,
-                                    )
-                                }
+                                entry.moduleLicenses
+                                    .mapNotNull { it.moduleLicense }
+                                    .forEach { license ->
+                                        Text(text = license)
+                                    }
                             }
                         }
                     }

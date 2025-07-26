@@ -41,5 +41,5 @@ navigation-compose = { module = "androidx.navigation:navigation-compose", versio
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-license = { id = "com.github.hierynomus.license", version = "0.16.1" }
+license-report = { id = "com.github.jk1.dependency-license-report", version = "2.9" }
 serialization-json = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinxSerializationJson" }

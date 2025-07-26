@@ -1,26 +1,23 @@
 import java.io.FileInputStream
 import java.util.Properties
+import com.github.jk1.license.render.*
 
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.license)
+    alias(libs.plugins.license.report)
     alias(libs.plugins.serialization.json)
 }
 
-downloadLicenses {
-    dependencyConfiguration = "releaseRuntimeClasspath"
-    includeProjectDependencies = true
-}
+val licenseReportDir = layout.buildDirectory.dir("reports/license")
 
 
 android {
     namespace = "cat.naval.atalaya"
     compileSdk = 35
 
-    sourceSets["main"].assets.srcDir("${layout.buildDirectory.get()}/reports/license")
 
     signingConfigs {
         val keystorePropertiesFile = file("../keystore.properties")
@@ -79,10 +76,19 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+
+    sourceSets["main"].assets.srcDir(licenseReportDir)
+}
+
+
+licenseReport {
+    renderers =  arrayOf( JsonReportRenderer("licenses.json", false))
+    outputDir = licenseReportDir.get().asFile.absolutePath
 }
 
 tasks.named("preBuild") {
-    dependsOn("downloadLicenses")
+    dependsOn("generateLicenseReport")
 }
 
 dependencies {
