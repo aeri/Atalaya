@@ -13,11 +13,14 @@ plugins {
 
 val licenseReportDir = layout.buildDirectory.dir("reports/license")
 
-
 android {
     namespace = "cat.naval.atalaya"
     compileSdk = 35
 
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }
 
     signingConfigs {
         val keystorePropertiesFile = file("../keystore.properties")
