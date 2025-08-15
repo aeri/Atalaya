@@ -14,6 +14,11 @@ Atalaya is a cell tower monitor which you can get detailed information about the
 - Improve the mobile experience by finding the exact location of the antenna through its identifiers or improving the signal quality and reception by monitoring the reception values.
 
 - Atalaya respects your freedom and privacy so it is and always will be open source. All data will be processed on the device itself without requiring an internet connection.
+<a href="https://f-droid.org/es/packages/cat.naval.atalaya">
+    <img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+    alt="Get it on F-Droid"
+    height="80">
+</a>
 
 ## Core
 
