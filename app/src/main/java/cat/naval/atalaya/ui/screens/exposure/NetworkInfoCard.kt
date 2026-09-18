@@ -76,6 +76,9 @@ fun NetworkInfoCard(networkData: NetworkData, cell: ICell?) {
                     stepSize = 1.sp
                 )
             )
+            if (networkData.simCarrierName.isNotEmpty()) {
+                InfoText(networkData.simCarrierName)
+            }
             Spacer(modifier = Modifier.height(8.dp))
             Row(
                 verticalAlignment = Alignment.CenterVertically

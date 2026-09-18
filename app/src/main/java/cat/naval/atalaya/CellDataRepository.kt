@@ -44,8 +44,13 @@ object CellDataRepository {
         val persistentNetworkData = NetworkData()
 
         CoroutineScope(Dispatchers.IO).launch {
-            val mccMnc = context.applicationContext.assets.open(FILENAME).bufferedReader().use {
-                readCsv(it)
+            val mccMnc = try {
+                context.applicationContext.assets.open(FILENAME).bufferedReader().use {
+                    readCsv(it)
+                }
+            } catch (e: Exception) {
+                Log.e("CellDataRepository", "Error reading $FILENAME", e)
+                emptyMap()
             }
             val manager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
             var subscriptionId: Int
@@ -71,14 +76,20 @@ object CellDataRepository {
                         persistentNetworkData.isAirplaneEnabled = false
                     }
 
+                    val simOperator: String = manager.simOperator
                     val networkOperator: String =
                         manager.networkOperator.takeUnless { it.isEmpty() }
-                            ?: manager.simOperator
+                            ?: simOperator
 
                     if (!TextUtils.isEmpty(networkOperator)) {
                         persistentNetworkData.carrierName =
                             mccMnc[networkOperator]?.name ?: manager.networkOperatorName
                     }
+
+                    persistentNetworkData.simCarrierName =
+                        if (simOperator.isNotEmpty() && simOperator != networkOperator) {
+                            manager.simOperatorName
+                        } else ""
 
                     val cell = persistentNetworkData.cells.firstOrNull {
                         it.connectionStatus == PrimaryConnection()

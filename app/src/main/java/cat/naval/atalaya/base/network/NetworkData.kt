@@ -14,6 +14,8 @@ data class NetworkData(
 
     var carrierName: String = "",
 
+    var simCarrierName: String = "",
+
     var isAirplaneEnabled: Boolean = false,
 
 
