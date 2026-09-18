@@ -114,6 +114,8 @@ fun NetworkInfoCard(networkData: NetworkData) {
 
 @Composable
 fun InfoText(text: String) {
+    if (text.isEmpty()) return
+
     Text(
         text = text,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
