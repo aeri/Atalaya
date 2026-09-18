@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cat.naval.atalaya.base.network.NetworkData
@@ -48,15 +49,12 @@ fun SimIsland(networks: List<NetworkData>, selected: Int, onSelect: (Int) -> Uni
                                 MaterialTheme.colorScheme.surfaceVariant
                             } else Color.Transparent
                         ),
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Default.SimCard,
-                            contentDescription = null
-                        )
-                    },
                     text = {
                         Text(
                             text = network.displayName,
+                            fontWeight = if (index == selected) {
+                                FontWeight.Bold
+                            } else FontWeight.Normal,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )

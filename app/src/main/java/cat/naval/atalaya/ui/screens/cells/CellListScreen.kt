@@ -160,7 +160,7 @@ fun CellCdmaRow(cell: CellCdma) {
         Text(
             text = listOf(
                 WcdmaRssiSignal<Int> { cell.signal.cdmaRssi },
-                WcdmaRssiSignal { cell.signal.cdmaEcio },
+                WcdmaEcnoSignal { cell.signal.cdmaEcio },
             ).joinValues(0),
             style = MaterialTheme.typography.bodySmall
         )

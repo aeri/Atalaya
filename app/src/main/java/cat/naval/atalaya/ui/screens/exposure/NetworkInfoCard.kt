@@ -90,9 +90,7 @@ fun NetworkInfoCard(networkData: NetworkData) {
                 Row {
                     if (cell?.band?.name != null) {
                         InfoText("${cell.band?.name}")
-                    }
-                    Text("・")
-                    if (cell?.band?.name != null) {
+                        Text("・")
                         InfoText(getBandText(cell))
                     }
                 }

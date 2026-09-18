@@ -24,8 +24,8 @@ class NrRsrqSignal<T>(extractor: (T) -> Number?) : SignalMeasure<T>(
     name = "SS RSRQ",
     extractor = extractor,
     unit = "dB",
-    minValue = -130f,
-    maxValue = -40f
+    minValue = -20f,
+    maxValue = 0f
 ) {
     override fun evaluate(value: Float?): SignalQuality {
         if (value == null) return SignalQuality.NONE
@@ -42,8 +42,8 @@ class NrSnrSignal<T>(extractor: (T) -> Number?) : SignalMeasure<T>(
     name = "SS SNR",
     extractor = extractor,
     unit = "dB",
-    minValue = -130f,
-    maxValue = -40f
+    minValue = 0f,
+    maxValue = 30f
 ) {
     override fun evaluate(value: Float?): SignalQuality {
         if (value == null) return SignalQuality.NONE
