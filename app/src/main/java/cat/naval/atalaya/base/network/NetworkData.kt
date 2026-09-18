@@ -18,6 +18,8 @@ data class NetworkData(
 
     var isAirplaneEnabled: Boolean = false,
 
+    var subscriptionId: Int = -1,
+
 
     var cells: List<ICell> = listOf(),
 

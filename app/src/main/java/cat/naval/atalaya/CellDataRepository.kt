@@ -2,7 +2,9 @@ package cat.naval.atalaya
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
 import android.provider.Settings
+import android.telephony.SubscriptionManager
 import android.telephony.TelephonyManager
 import android.text.TextUtils
 import android.util.Log
@@ -52,13 +54,18 @@ object CellDataRepository {
                 Log.e("CellDataRepository", "Error reading $FILENAME", e)
                 emptyMap()
             }
-            val manager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+            val defaultManager =
+                context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
             var subscriptionId: Int
             while (true) {
                 try {
                     NetMonsterFactory.getSubscription(context).apply {
-                        subscriptionId = getActiveSubscriptionIds().first()
+                        val active = getActiveSubscriptionIds()
+                        subscriptionId = dataSubscriptionId().takeIf { it in active }
+                            ?: active.first()
                     }
+
+                    val manager = managerFor(defaultManager, subscriptionId)
 
                     NetMonsterFactory.get(context).apply {
                         val allSources: List<ICell> = getCells()
@@ -66,6 +73,7 @@ object CellDataRepository {
 
                         persistentNetworkData.cells = allSources
                         persistentNetworkData.networkType = networkType
+                        persistentNetworkData.subscriptionId = subscriptionId
                     }
 
                     if (persistentNetworkData.networkType is NetworkType.Unknown) {
@@ -80,10 +88,13 @@ object CellDataRepository {
                     val networkOperator: String =
                         manager.networkOperator.takeUnless { it.isEmpty() }
                             ?: simOperator
+                    val operatorName: String =
+                        manager.networkOperatorName.takeUnless { it.isEmpty() }
+                            ?: manager.simOperatorName
 
                     if (!TextUtils.isEmpty(networkOperator)) {
                         persistentNetworkData.carrierName =
-                            mccMnc[networkOperator]?.name ?: manager.networkOperatorName
+                            mccMnc[networkOperator]?.name ?: operatorName
                     }
 
                     persistentNetworkData.simCarrierName =
@@ -92,7 +103,7 @@ object CellDataRepository {
                         } else ""
 
                     val cell = persistentNetworkData.cells.firstOrNull {
-                        it.connectionStatus == PrimaryConnection()
+                        it.subscriptionId == subscriptionId && it.connectionStatus == PrimaryConnection()
                     }
 
                     when (val signal = cell?.signal) {
@@ -113,6 +124,16 @@ object CellDataRepository {
             }
         }
     }
+
+    private fun dataSubscriptionId(): Int =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            SubscriptionManager.getDefaultDataSubscriptionId()
+        } else -1
+
+    private fun managerFor(manager: TelephonyManager, subscriptionId: Int): TelephonyManager =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            manager.createForSubscriptionId(subscriptionId)
+        } else manager
 
     private fun isAirplaneModeOn(context: Context): Boolean {
         return Settings.Global.getInt(

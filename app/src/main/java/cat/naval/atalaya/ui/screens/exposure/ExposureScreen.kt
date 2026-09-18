@@ -11,7 +11,9 @@ import cz.mroczis.netmonster.core.model.connection.PrimaryConnection
 @Composable
 fun ExposureScreen() {
     val networkData by CellDataRepository.networkDataFlow.collectAsState()
-    val cell = networkData.cells.firstOrNull { it.connectionStatus == PrimaryConnection() }
+    val cell = networkData.cells.firstOrNull {
+        it.subscriptionId == networkData.subscriptionId && it.connectionStatus == PrimaryConnection()
+    }
 
     Column {
         if (networkData.isAirplaneEnabled) {
