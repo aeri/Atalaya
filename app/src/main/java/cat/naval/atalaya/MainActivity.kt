@@ -1,8 +1,13 @@
 package cat.naval.atalaya
 
 import android.Manifest
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -31,6 +36,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +44,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.location.LocationManagerCompat
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -49,33 +57,72 @@ import cat.naval.atalaya.ui.bottomnav.BottomNavGraph
 import cat.naval.atalaya.ui.screens.exposure.ExposureScreen
 import cat.naval.atalaya.ui.screens.permissions.PermissionsRequiredScreen
 import cat.naval.atalaya.ui.theme.AtalayaTheme
-import java.util.Arrays
 
 class MainActivity : ComponentActivity() {
     private val permissionRequestCode = 225
+    private val permissions = arrayOf(
+        Manifest.permission.READ_PHONE_STATE,
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION
+    )
+
+    private val permissionsGranted = mutableStateOf(false)
+    private val locationEnabled = mutableStateOf(false)
+
+    private val locationReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            locationEnabled.value = isLocationEnabled()
+        }
+    }
 
     private fun permissionChecker() {
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(
-                Manifest.permission.READ_PHONE_STATE,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ),
-            permissionRequestCode
-        )
+        ActivityCompat.requestPermissions(this, permissions, permissionRequestCode)
+    }
+
+    private fun hasPermissions() = permissions.all {
+        ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun isLocationEnabled() = LocationManagerCompat.isLocationEnabled(
+        getSystemService(LOCATION_SERVICE) as LocationManager
+    )
+
+    private fun updatePermissions(granted: Boolean) {
+        permissionsGranted.value = granted
+        if (granted) CellDataRepository.start(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        updatePermissions(hasPermissions())
         permissionChecker()
+
+        setContent {
+            AtalayaTheme {
+                when {
+                    !permissionsGranted.value -> PermissionsRequiredScreen()
+                    !locationEnabled.value -> PermissionsRequiredScreen(locationDisabled = true)
+                    else -> MainScreen()
+                }
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        Log.d("MainActivity", "onResume")
+        locationEnabled.value = isLocationEnabled()
+        ContextCompat.registerReceiver(
+            this,
+            locationReceiver,
+            IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION),
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
+    }
 
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(locationReceiver)
     }
 
     override fun onStop() {
@@ -86,7 +133,6 @@ class MainActivity : ComponentActivity() {
     override fun onRestart() {
         super.onRestart()
         permissionChecker()
-
     }
 
     @Deprecated("Deprecated in Java")
@@ -97,22 +143,10 @@ class MainActivity : ComponentActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             permissionRequestCode -> {
-                // If request is cancelled, the result arrays are empty.
-                if (Arrays.binarySearch(grantResults, PackageManager.PERMISSION_DENIED) >= 0
-                ) {
-                    setContent {
-                        AtalayaTheme {
-                            PermissionsRequiredScreen()
-                        }
-                    }
-                } else {
-                    CellDataRepository.start(this)
-                    setContent {
-                        AtalayaTheme {
-                            MainScreen()
-                        }
-                    }
-                }
+                updatePermissions(
+                    grantResults.isNotEmpty() &&
+                            grantResults.all { it == PackageManager.PERMISSION_GRANTED }
+                )
                 return
             }
         }

@@ -15,7 +15,7 @@ val licenseReportDir = layout.buildDirectory.dir("reports/license")
 
 android {
     namespace = "cat.naval.atalaya"
-    compileSdk = 35
+    compileSdk = 37
 
     dependenciesInfo {
         includeInApk = false
