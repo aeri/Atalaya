@@ -86,19 +86,19 @@ object CellDataRepository {
                         }
 
                         val simOperator: String = manager.simOperator
-                        val networkOperator: String =
-                            manager.networkOperator.takeUnless { it.isEmpty() }
-                                ?: simOperator
+                        val plmn: String = network.cell?.network?.toPlmn()
+                            ?: manager.networkOperator.takeUnless { it.isEmpty() }
+                            ?: simOperator
                         val operatorName: String =
                             manager.networkOperatorName.takeUnless { it.isEmpty() }
                                 ?: manager.simOperatorName
 
-                        if (!TextUtils.isEmpty(networkOperator)) {
-                            network.carrierName = mccMnc[networkOperator]?.name ?: operatorName
+                        if (!TextUtils.isEmpty(plmn)) {
+                            network.carrierName = mccMnc[plmn]?.name ?: operatorName
                         }
 
                         network.simCarrierName =
-                            if (simOperator.isNotEmpty() && simOperator != networkOperator) {
+                            if (simOperator.isNotEmpty() && simOperator != plmn) {
                                 manager.simOperatorName
                             } else ""
 
