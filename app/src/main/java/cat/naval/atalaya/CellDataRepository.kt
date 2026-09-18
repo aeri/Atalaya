@@ -41,12 +41,12 @@ object CellDataRepository {
         if (isStarted) return
         isStarted = true
 
-        val mccMnc = context.applicationContext.assets.open(FILENAME).bufferedReader().use {
-            readCsv(it)
-        }
         val persistentNetworkData = NetworkData()
 
         CoroutineScope(Dispatchers.IO).launch {
+            val mccMnc = context.applicationContext.assets.open(FILENAME).bufferedReader().use {
+                readCsv(it)
+            }
             val manager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
             var subscriptionId: Int
             while (true) {
@@ -70,14 +70,14 @@ object CellDataRepository {
                     } else {
                         persistentNetworkData.isAirplaneEnabled = false
                     }
-                    val networkOperator: String = manager.networkOperator
+
+                    val networkOperator: String =
+                        manager.networkOperator.takeUnless { it.isEmpty() }
+                            ?: manager.simOperator
 
                     if (!TextUtils.isEmpty(networkOperator)) {
-                        val mcc = networkOperator.substring(0, 3).toInt()
-                        val mnc = networkOperator.substring(3).toInt()
                         persistentNetworkData.carrierName =
-                            mccMnc.find { it.mcc == mcc && it.mnc == mnc }?.network
-                                ?: manager.networkOperatorName
+                            mccMnc[networkOperator]?.name ?: manager.networkOperatorName
                     }
 
                     val cell = persistentNetworkData.cells.firstOrNull {
@@ -110,18 +110,17 @@ object CellDataRepository {
         ) != 0
     }
 
-    private fun readCsv(inputStream: BufferedReader): List<MccMnc> {
-        val csvParser = CSVParser(inputStream, CSVFormat.DEFAULT)
-        return csvParser.drop(1).map {
-            MccMnc(
-                mcc = it[0].toInt(),
-                mnc = it[1].toInt(),
-                iso = it[2],
-                country = it[3],
-                countryCode = it[4],
-                network = it[5],
-            )
+    private fun readCsv(inputStream: BufferedReader): Map<String, MccMnc> {
+        val csvParser = CSVParser(inputStream, CSVFormat.DEFAULT.withDelimiter(';'))
+        val carriers = HashMap<String, MccMnc>(4096)
+        csvParser.asSequence().drop(1).forEach {
+            val plmn = it[2]
+            val name = it[7].ifEmpty { it[6] }
+            if (name.isNotEmpty() && plmn !in carriers) {
+                carriers[plmn] = MccMnc(name, it[5])
+            }
         }
+        return carriers
     }
 
     fun rawData(): String {
