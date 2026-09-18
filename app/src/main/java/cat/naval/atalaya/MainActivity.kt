@@ -11,6 +11,7 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedVisibility
@@ -43,7 +44,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat
 import androidx.navigation.NavDestination
@@ -59,7 +59,6 @@ import cat.naval.atalaya.ui.screens.permissions.PermissionsRequiredScreen
 import cat.naval.atalaya.ui.theme.AtalayaTheme
 
 class MainActivity : ComponentActivity() {
-    private val permissionRequestCode = 225
     private val permissions = arrayOf(
         Manifest.permission.READ_PHONE_STATE,
         Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -75,9 +74,9 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun permissionChecker() {
-        ActivityCompat.requestPermissions(this, permissions, permissionRequestCode)
-    }
+    private val permissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { result -> updatePermissions(result.isNotEmpty() && result.values.all { it }) }
 
     private fun hasPermissions() = permissions.all {
         ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
@@ -96,7 +95,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         updatePermissions(hasPermissions())
-        permissionChecker()
+        permissionLauncher.launch(permissions)
 
         setContent {
             AtalayaTheme {
@@ -132,24 +131,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onRestart() {
         super.onRestart()
-        permissionChecker()
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>, grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            permissionRequestCode -> {
-                updatePermissions(
-                    grantResults.isNotEmpty() &&
-                            grantResults.all { it == PackageManager.PERMISSION_GRANTED }
-                )
-                return
-            }
-        }
+        permissionLauncher.launch(permissions)
     }
 }
 
