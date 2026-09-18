@@ -59,12 +59,12 @@ object CellDataRepository {
             }
             val defaultManager =
                 context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+            val subscriptionManager = NetMonsterFactory.getSubscription(context)
+            val netMonster = NetMonsterFactory.get(context)
             while (true) {
                 try {
-                    val subscriptions =
-                        NetMonsterFactory.getSubscription(context).getActiveSubscriptions()
+                    val subscriptions = subscriptionManager.getActiveSubscriptions()
                     val names = displayNames(context)
-                    val netMonster = NetMonsterFactory.get(context)
                     val allCells: List<ICell> = netMonster.getCells()
 
                     radioState.cells = allCells

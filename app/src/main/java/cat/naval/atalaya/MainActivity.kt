@@ -131,7 +131,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onRestart() {
         super.onRestart()
-        permissionLauncher.launch(permissions)
+        updatePermissions(hasPermissions())
     }
 }
 
@@ -216,8 +216,6 @@ fun AddItem(
     navController: NavHostController
 ) {
     val selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
-
-    if (selected) Color.Magenta.copy(alpha = 0.6f) else Color.Transparent
 
     val contentColor =
         if (selected) MaterialTheme.colorScheme.onSurface else Color.Gray

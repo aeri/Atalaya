@@ -97,12 +97,8 @@ fun NetworkInfoCard(networkData: NetworkData) {
             }
             Spacer(modifier = Modifier.height(16.dp))
             if (cell is CellLte && cell.aggregatedBands.isNotEmpty()) {
-                val bands = ""
-                cell.aggregatedBands.forEach {
-                    bands.plus("+${it.name}")
-                }
                 Spacer(modifier = Modifier.width(5.dp))
-                Text(bands)
+                Text(cell.aggregatedBands.joinToString("") { "+${it.name}" })
             }
             CellInfoContent(cell)
 

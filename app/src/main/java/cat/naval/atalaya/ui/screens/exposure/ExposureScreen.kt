@@ -13,6 +13,7 @@ import cat.naval.atalaya.CellDataRepository
 @Composable
 fun ExposureScreen() {
     val radioState by CellDataRepository.radioStateFlow.collectAsState()
+    var selected by rememberSaveable { mutableIntStateOf(0) }
 
     if (radioState.isAirplaneEnabled) {
         AirplaneCard()
@@ -22,7 +23,6 @@ fun ExposureScreen() {
     val networks = radioState.networks
     if (networks.isEmpty()) return
 
-    var selected by rememberSaveable { mutableIntStateOf(0) }
     val index = selected.coerceAtMost(networks.lastIndex)
     val network = networks[index]
 
