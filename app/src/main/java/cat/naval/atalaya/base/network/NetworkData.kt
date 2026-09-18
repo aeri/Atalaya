@@ -12,18 +12,19 @@ import cz.mroczis.netmonster.core.model.signal.SignalWcdma
 
 data class NetworkData(
 
+    val subscriptionId: Int = -1,
+
+    val slotIndex: Int = -1,
+
+    var displayName: String = "",
+
     var carrierName: String = "",
 
     var simCarrierName: String = "",
 
-    var isAirplaneEnabled: Boolean = false,
-
-    var subscriptionId: Int = -1,
-
-
-    var cells: List<ICell> = listOf(),
-
     var networkType: NetworkType? = null,
+
+    var cell: ICell? = null,
 
     var gsmSignal: List<SignalGsm> = emptyList(),
     var lteSignal: List<SignalLte> = emptyList(),
@@ -31,6 +32,5 @@ data class NetworkData(
     var cdmaSignal: List<SignalCdma> = emptyList(),
     var nrSignal: List<SignalNr> = emptyList(),
     var tdscdmaSignal: List<SignalTdscdma> = emptyList(),
-
 
     )

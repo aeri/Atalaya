@@ -37,10 +37,11 @@ import cz.mroczis.netmonster.core.model.cell.CellLte
 import cz.mroczis.netmonster.core.model.cell.CellNr
 import cz.mroczis.netmonster.core.model.cell.CellTdscdma
 import cz.mroczis.netmonster.core.model.cell.CellWcdma
-import cz.mroczis.netmonster.core.model.cell.ICell
 
 @Composable
-fun SignalSection(networkData: NetworkData, cell: ICell?) {
+fun SignalSection(networkData: NetworkData) {
+    val cell = networkData.cell
+
     Column(modifier = Modifier.padding(horizontal = 15.dp, vertical = 10.dp)) {
         Text(
             text = "Signals",

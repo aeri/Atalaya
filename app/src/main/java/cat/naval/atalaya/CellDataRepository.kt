@@ -10,6 +10,7 @@ import android.text.TextUtils
 import android.util.Log
 import cat.naval.atalaya.base.network.MccMnc
 import cat.naval.atalaya.base.network.NetworkData
+import cat.naval.atalaya.base.network.RadioState
 import cz.mroczis.netmonster.core.db.model.NetworkType
 import cz.mroczis.netmonster.core.factory.NetMonsterFactory
 import cz.mroczis.netmonster.core.model.cell.ICell
@@ -32,18 +33,20 @@ import org.apache.commons.csv.CSVParser
 import java.io.BufferedReader
 
 object CellDataRepository {
-    private val _networkDataFlow = MutableStateFlow(NetworkData())
-    val networkDataFlow: StateFlow<NetworkData> = _networkDataFlow.asStateFlow()
+    private val _radioStateFlow = MutableStateFlow(RadioState())
+    val radioStateFlow: StateFlow<RadioState> = _radioStateFlow.asStateFlow()
 
     private var isStarted = false
     private const val FILENAME = "mcc-mnc.csv"
+    private const val HISTORY = 60
 
     @SuppressLint("MissingPermission")
     fun start(context: Context) {
         if (isStarted) return
         isStarted = true
 
-        val persistentNetworkData = NetworkData()
+        val radioState = RadioState()
+        val networks = LinkedHashMap<Int, NetworkData>()
 
         CoroutineScope(Dispatchers.IO).launch {
             val mccMnc = try {
@@ -56,66 +59,78 @@ object CellDataRepository {
             }
             val defaultManager =
                 context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-            var subscriptionId: Int
             while (true) {
                 try {
-                    NetMonsterFactory.getSubscription(context).apply {
-                        val active = getActiveSubscriptionIds()
-                        subscriptionId = dataSubscriptionId().takeIf { it in active }
-                            ?: active.first()
-                    }
+                    val subscriptions =
+                        NetMonsterFactory.getSubscription(context).getActiveSubscriptions()
+                    val names = displayNames(context)
+                    val netMonster = NetMonsterFactory.get(context)
+                    val allCells: List<ICell> = netMonster.getCells()
 
-                    val manager = managerFor(defaultManager, subscriptionId)
+                    radioState.cells = allCells
+                    networks.keys.retainAll(subscriptions.map { it.subscriptionId }.toSet())
 
-                    NetMonsterFactory.get(context).apply {
-                        val allSources: List<ICell> = getCells()
-                        val networkType: NetworkType = getNetworkType(subscriptionId)
-
-                        persistentNetworkData.cells = allSources
-                        persistentNetworkData.networkType = networkType
-                        persistentNetworkData.subscriptionId = subscriptionId
-                    }
-
-                    if (persistentNetworkData.networkType is NetworkType.Unknown) {
-                        if (isAirplaneModeOn(context)) {
-                            persistentNetworkData.isAirplaneEnabled = true
+                    for (subscription in subscriptions) {
+                        val subscriptionId = subscription.subscriptionId
+                        val network = networks.getOrPut(subscriptionId) {
+                            NetworkData(subscriptionId, subscription.simSlotIndex)
                         }
-                    } else {
-                        persistentNetworkData.isAirplaneEnabled = false
+                        val manager = managerFor(defaultManager, subscriptionId)
+
+                        network.displayName = names[subscriptionId]?.takeUnless { it.isEmpty() }
+                            ?: "SIM ${subscription.simSlotIndex + 1}"
+                        network.networkType = netMonster.getNetworkType(subscriptionId)
+                        network.cell = allCells.firstOrNull {
+                            it.subscriptionId == subscriptionId &&
+                                    it.connectionStatus == PrimaryConnection()
+                        }
+
+                        val simOperator: String = manager.simOperator
+                        val networkOperator: String =
+                            manager.networkOperator.takeUnless { it.isEmpty() }
+                                ?: simOperator
+                        val operatorName: String =
+                            manager.networkOperatorName.takeUnless { it.isEmpty() }
+                                ?: manager.simOperatorName
+
+                        if (!TextUtils.isEmpty(networkOperator)) {
+                            network.carrierName = mccMnc[networkOperator]?.name ?: operatorName
+                        }
+
+                        network.simCarrierName =
+                            if (simOperator.isNotEmpty() && simOperator != networkOperator) {
+                                manager.simOperatorName
+                            } else ""
+
+                        when (val signal = network.cell?.signal) {
+                            is SignalGsm ->
+                                network.gsmSignal = (network.gsmSignal + signal).takeLast(HISTORY)
+
+                            is SignalLte ->
+                                network.lteSignal = (network.lteSignal + signal).takeLast(HISTORY)
+
+                            is SignalWcdma ->
+                                network.wcdmaSignal =
+                                    (network.wcdmaSignal + signal).takeLast(HISTORY)
+
+                            is SignalNr ->
+                                network.nrSignal = (network.nrSignal + signal).takeLast(HISTORY)
+
+                            is SignalCdma ->
+                                network.cdmaSignal = (network.cdmaSignal + signal).takeLast(HISTORY)
+
+                            is SignalTdscdma ->
+                                network.tdscdmaSignal =
+                                    (network.tdscdmaSignal + signal).takeLast(HISTORY)
+                        }
                     }
 
-                    val simOperator: String = manager.simOperator
-                    val networkOperator: String =
-                        manager.networkOperator.takeUnless { it.isEmpty() }
-                            ?: simOperator
-                    val operatorName: String =
-                        manager.networkOperatorName.takeUnless { it.isEmpty() }
-                            ?: manager.simOperatorName
+                    radioState.networks = networks.values.sortedBy { it.slotIndex }.map { it.copy() }
+                    radioState.isAirplaneEnabled =
+                        radioState.networks.all { it.networkType is NetworkType.Unknown } &&
+                                isAirplaneModeOn(context)
 
-                    if (!TextUtils.isEmpty(networkOperator)) {
-                        persistentNetworkData.carrierName =
-                            mccMnc[networkOperator]?.name ?: operatorName
-                    }
-
-                    persistentNetworkData.simCarrierName =
-                        if (simOperator.isNotEmpty() && simOperator != networkOperator) {
-                            manager.simOperatorName
-                        } else ""
-
-                    val cell = persistentNetworkData.cells.firstOrNull {
-                        it.subscriptionId == subscriptionId && it.connectionStatus == PrimaryConnection()
-                    }
-
-                    when (val signal = cell?.signal) {
-                        is SignalGsm -> persistentNetworkData.gsmSignal += signal
-                        is SignalLte -> persistentNetworkData.lteSignal += signal
-                        is SignalWcdma -> persistentNetworkData.wcdmaSignal += signal
-                        is SignalNr -> persistentNetworkData.nrSignal += signal
-                        is SignalCdma -> persistentNetworkData.cdmaSignal += signal
-                        is SignalTdscdma -> persistentNetworkData.tdscdmaSignal += signal
-                    }
-
-                    _networkDataFlow.value = persistentNetworkData.copy()
+                    _radioStateFlow.value = radioState.copy()
 
                 } catch (e: Exception) {
                     Log.e("CellDataRepository", "Error getting cells", e)
@@ -125,10 +140,14 @@ object CellDataRepository {
         }
     }
 
-    private fun dataSubscriptionId(): Int =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            SubscriptionManager.getDefaultDataSubscriptionId()
-        } else -1
+    @SuppressLint("MissingPermission")
+    private fun displayNames(context: Context): Map<Int, String> {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1) return emptyMap()
+        val manager = context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE)
+                as SubscriptionManager
+        return manager.activeSubscriptionInfoList.orEmpty()
+            .associate { it.subscriptionId to it.displayName?.toString().orEmpty() }
+    }
 
     private fun managerFor(manager: TelephonyManager, subscriptionId: Int): TelephonyManager =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -156,6 +175,6 @@ object CellDataRepository {
     }
 
     fun rawData(): String {
-        return networkDataFlow.value.toString()
+        return radioStateFlow.value.toString()
     }
 }

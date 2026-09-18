@@ -47,12 +47,17 @@ import cz.mroczis.netmonster.core.model.cell.ICell
 
 @Composable
 fun CellListScreen() {
-    val networkData by CellDataRepository.networkDataFlow.collectAsState()
+    val radioState by CellDataRepository.radioStateFlow.collectAsState()
 
-    if (networkData.isAirplaneEnabled) {
+    if (radioState.isAirplaneEnabled) {
         AirplaneCard()
         return
     }
+
+    val slots = radioState.networks
+        .takeIf { it.size > 1 }
+        ?.associate { it.subscriptionId to it.displayName }
+        .orEmpty()
 
     LazyColumn(
         modifier = Modifier
@@ -61,16 +66,16 @@ fun CellListScreen() {
 
     ) {
 
-        items(networkData.cells) { cell ->
+        items(radioState.cells) { cell ->
             LocationItemView(
-                cell, modifier = Modifier.animateItem()
+                cell, slots[cell.subscriptionId], modifier = Modifier.animateItem()
             )
         }
     }
 }
 
 @Composable
-fun LocationItemView(cell: ICell, modifier: Modifier = Modifier) {
+fun LocationItemView(cell: ICell, slot: String? = null, modifier: Modifier = Modifier) {
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -82,6 +87,13 @@ fun LocationItemView(cell: ICell, modifier: Modifier = Modifier) {
             .padding(12.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
+
+            if (slot != null) {
+                Text(
+                    text = slot,
+                    style = MaterialTheme.typography.labelSmall
+                )
+            }
 
             when (cell) {
                 is CellGsm -> CellGsmRow(cell)

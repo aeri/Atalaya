@@ -47,7 +47,9 @@ import cz.mroczis.netmonster.core.model.cell.CellWcdma
 import cz.mroczis.netmonster.core.model.cell.ICell
 
 @Composable
-fun NetworkInfoCard(networkData: NetworkData, cell: ICell?) {
+fun NetworkInfoCard(networkData: NetworkData) {
+    val cell = networkData.cell
+
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer
