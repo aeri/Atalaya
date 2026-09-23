@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,10 +38,11 @@ import cz.mroczis.netmonster.core.model.cell.CellLte
 import cz.mroczis.netmonster.core.model.cell.CellNr
 import cz.mroczis.netmonster.core.model.cell.CellTdscdma
 import cz.mroczis.netmonster.core.model.cell.CellWcdma
-import cz.mroczis.netmonster.core.model.cell.ICell
 
 @Composable
-fun SignalSection(networkData: NetworkData, cell: ICell?) {
+fun SignalSection(networkData: NetworkData) {
+    val cell = networkData.cell
+
     Column(modifier = Modifier.padding(horizontal = 15.dp, vertical = 10.dp)) {
         Text(
             text = "Signals",
@@ -134,10 +136,8 @@ fun SignalInfoGrid(signalInfos: List<SignalInfo>) {
         verticalArrangement = Arrangement.spacedBy(20.dp),
         modifier = Modifier.fillMaxSize()
     ) {
-        signalInfos.forEach { info ->
-            item {
-                AssetPerformanceCard(info)
-            }
+        items(signalInfos, key = { it.name }) { info ->
+            AssetPerformanceCard(info)
         }
     }
 }

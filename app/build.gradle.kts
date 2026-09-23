@@ -15,7 +15,7 @@ val licenseReportDir = layout.buildDirectory.dir("reports/license")
 
 android {
     namespace = "cat.naval.atalaya"
-    compileSdk = 35
+    compileSdk = 37
 
     dependenciesInfo {
         includeInApk = false
@@ -43,9 +43,9 @@ android {
     defaultConfig {
         applicationId = "cat.naval.atalaya"
         minSdk = 21
-        targetSdk = 35
-        versionCode = 1
-        versionName = "1.0.0"
+        targetSdk = 37
+        versionCode = 2
+        versionName = "1.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

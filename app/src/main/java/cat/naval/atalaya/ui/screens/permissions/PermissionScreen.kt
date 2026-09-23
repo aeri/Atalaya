@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun PermissionsRequiredScreen() {
+fun PermissionsRequiredScreen(locationDisabled: Boolean = false) {
     val context = LocalContext.current
 
     Column(
@@ -31,7 +31,10 @@ fun PermissionsRequiredScreen() {
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Permissions are required for the application to function properly. Please grant the necessary permissions.",
+            text = if (locationDisabled)
+                "Location services are required for the application to function properly. Please enable it."
+            else
+                "Permissions are required for the application to function properly. Please grant the necessary permissions.",
             fontSize = 18.sp,
             color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center,
@@ -46,12 +49,16 @@ fun PermissionsRequiredScreen() {
                 disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer
             ),
             onClick = {
-                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                    data = Uri.fromParts("package", context.packageName, null)
+                val intent = if (locationDisabled) {
+                    Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                } else {
+                    Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                        data = Uri.fromParts("package", context.packageName, null)
+                    }
                 }
                 context.startActivity(intent)
             }) {
-            Text(text = "Open settings")
+            Text(text = if (locationDisabled) "Open location settings" else "Open settings")
         }
     }
 }

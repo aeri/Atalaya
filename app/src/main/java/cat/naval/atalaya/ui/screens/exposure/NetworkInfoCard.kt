@@ -47,7 +47,9 @@ import cz.mroczis.netmonster.core.model.cell.CellWcdma
 import cz.mroczis.netmonster.core.model.cell.ICell
 
 @Composable
-fun NetworkInfoCard(networkData: NetworkData, cell: ICell?) {
+fun NetworkInfoCard(networkData: NetworkData) {
+    val cell = networkData.cell
+
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer
@@ -76,6 +78,9 @@ fun NetworkInfoCard(networkData: NetworkData, cell: ICell?) {
                     stepSize = 1.sp
                 )
             )
+            if (networkData.simCarrierName.isNotEmpty()) {
+                InfoText(networkData.simCarrierName)
+            }
             Spacer(modifier = Modifier.height(8.dp))
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -85,21 +90,15 @@ fun NetworkInfoCard(networkData: NetworkData, cell: ICell?) {
                 Row {
                     if (cell?.band?.name != null) {
                         InfoText("${cell.band?.name}")
-                    }
-                    Text("・")
-                    if (cell?.band?.name != null) {
+                        Text("・")
                         InfoText(getBandText(cell))
                     }
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
             if (cell is CellLte && cell.aggregatedBands.isNotEmpty()) {
-                val bands = ""
-                cell.aggregatedBands.forEach {
-                    bands.plus("+${it.name}")
-                }
                 Spacer(modifier = Modifier.width(5.dp))
-                Text(bands)
+                Text(cell.aggregatedBands.joinToString("") { "+${it.name}" })
             }
             CellInfoContent(cell)
 
@@ -109,6 +108,8 @@ fun NetworkInfoCard(networkData: NetworkData, cell: ICell?) {
 
 @Composable
 fun InfoText(text: String) {
+    if (text.isEmpty()) return
+
     Text(
         text = text,
         color = MaterialTheme.colorScheme.onSurfaceVariant,

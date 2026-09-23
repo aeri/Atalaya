@@ -12,9 +12,9 @@ class WcdmaRssiSignal<T>(extractor: (T) -> Number?) : SignalMeasure<T>(
         if (value == null) return SignalQuality.NONE
         return when {
             value <= -110 -> SignalQuality.NONE
-            value > -110 && value < -100 -> SignalQuality.POOR
-            value > -100 && value <= -86 -> SignalQuality.MODERATE
-            value >= -85 && value < -70 -> SignalQuality.GOOD
+            value <= -100 -> SignalQuality.POOR
+            value <= -86 -> SignalQuality.MODERATE
+            value < -70 -> SignalQuality.GOOD
             else -> SignalQuality.GREAT
         }
     }

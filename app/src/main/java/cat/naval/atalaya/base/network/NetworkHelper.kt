@@ -57,7 +57,7 @@ class NetworkHelper {
                         is CellLte -> "4G"
                         is CellNr -> "5G"
 
-                        else -> "?G"
+                        else -> ""
                     }
                 }
             }
@@ -99,7 +99,7 @@ class NetworkHelper {
                 }
 
                 else ->
-                    return "?"
+                    return ""
             }
 
         }

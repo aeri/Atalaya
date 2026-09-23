@@ -1,5 +1,5 @@
 [versions]
-agp = "8.10.1"
+agp = "8.13.2"
 commonsCsv = "1.5"
 coreSplashscreen = "1.0.1"
 kotlin = "2.1.0"
